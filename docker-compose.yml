@@ -1,0 +1,40 @@
+version: '3'
+
+# networks:
+#     db-line:
+#       external:
+#         name: db-line
+
+# services:
+#     nginx:
+#       image: "php7-docker"
+#       container_name: buuline-backend
+#       ports:
+#           - "8181:80"
+#       networks:
+#           - db-line
+#       volumes:
+#           - ./home/buuline/linebot:/var/www/html
+        
+services:
+  # nginx:
+  #   image: "php7-docker"
+  #   container_name: buuline-backend
+  #   ports:
+  #       - "8181:80"
+  #   networks:
+  #       - db-line
+  #   volumes:
+  #       - H:/laravelLinebot:/var/www/html
+  nginx:
+    image: "php7-docker"
+    container_name: buuline-backend
+    ports:
+        - "8181:80"
+    networks:
+        - buuline-proxy
+    volumes:
+        - H:/lp:/var/www/html
+networks:
+    buuline-proxy:
+

@@ -1,0 +1,163 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use DateTime;
+use \App\Rich;
+use \App\User;
+
+class test extends Controller
+{
+    //
+    public function test_profile($id)
+    {
+        $profile = User::where('username', $id)->get();
+        var_dump($profile);
+    }
+
+    public function dateformat()
+    {
+        $date = "04/15/2020";
+        echo date("d-m-Y", strtotime($date));
+        echo "=>", date("d/m/Y");
+
+        echo "<br>";
+
+        $tt1 = "04/18/2020";
+        $ddddddd = date("Y-m-d", strtotime($tt1));
+
+        $datetime1 = new DateTime();
+        $datetime2 = new DateTime($ddddddd);
+        $difference = $datetime1->diff($datetime2);
+        dd($difference);
+
+        if ($difference->invert == 1) {
+            if($difference->days == 0){
+                //continue
+            } else {
+                redirect('/main/Richdata')->withError('กรุณากำหนดเวลาใหม่');
+            }
+        } else {
+            //continue
+        }
+
+// $tt = strtotime($tt1);
+        // $newformat = date('Y-m-d',$tt);
+
+// $dddd = date("Y-m-d");
+
+// $myDateTime = DateTime::createFromFormat('m/d/Y',$tt);
+        // $newDateString = $myDateTime->format('Y-m-d');
+        // echo "ggggggg : $ddddddd";
+
+// $tt1 = date_create_from_format('Y/m/d',$tt);
+        // echo $tt1;
+        // echo "<br>";
+        // $dateFormat1 = date("Y-m-d", strtotime($tt));
+
+// echo $dayFormat;
+
+// $datetime2 = new DateTime();
+        // $dayForma2 = $datetime2->format('m-d-Y');
+        // echo $dayFormat2;
+
+// $datetime2 = new DateTime($dateFormat1);
+        // dd($datetime1->format('m-d-Y'));
+        // dd($datetime2);
+
+// var_dump();
+        // echo $tt;
+        // dd($datetime1->format('m-d-Y'));
+
+        $rich = Rich::whereNotnull('timeRich')->get();
+
+        $rich_de = json_decode($rich);
+
+        if (count($rich_de) == 0) {
+            //
+            echo 'not have';
+        } else {
+            echo 'have';
+        }
+
+        echo "<br>";
+
+        foreach ($rich_de as $row) {
+            foreach ($row as $key => $val) {
+                $date == $row->timeRich;
+
+            }
+        }
+
+        echo $date;
+        echo "<br>";
+        // $date == $row->timeRich
+
+        dd($rich_de);
+    }
+
+    public function testtime()
+    {
+        $datetime1 = new DateTime();
+        $datetime2 = new DateTime('2020-08-02 15:04:53');
+        $interval = $datetime1->diff($datetime2);
+        $elapsed = $interval->format('%y years %m months %a days %h hours %i minutes %s seconds');
+        $elapsed2 = $interval->format('%i minutes %s seconds');
+        // $elapsed2 = $interval->format('u');
+        $te = $interval->format('%R%a days');
+        $tee = str_replace("+", "", $te);
+
+        // $date = "04/15/2020";
+
+        // echo date("d-m-Y", strtotime($date));
+        // dd($elapsed);
+        // $arr = array();
+        // echo $interval;
+        // $arr[] = $datetime2;
+        // $js = json_encode($arr);
+        // echo implode(" ",$js);
+        // $dd = json_decode((string)$interval);
+
+        // echo gettype($js);
+        // echo " == ";
+        // echo $elapsed;
+        // echo $elapsed2;
+        // echo "<br";
+        // echo $tee;
+
+        $userStudent = array();
+        $userPersonnal = array();
+
+        $user = User::where('status', 'ใช้งานอยู่')->get();
+        $user1 = json_decode($user);
+
+        foreach ($user1 as $row) {
+            foreach ($row as $key => $val) {
+                if ($key == "username") {
+                    if (is_numeric($val)) {
+                        $userStudent[] = $row->userId;
+                    }if (!is_numeric($val)) {
+                        $userPersonnal[] = $row->userId;
+                    }
+                }
+            }
+        }
+
+        $arrayUser = array_values($userStudent);
+        $arrayPersonnal = array_values($userPersonnal);
+        $gg = json_encode($arrayUser);
+        echo $gg;
+
+    }
+
+    public function pass_expire($datetime)
+    {
+        $datetime1 = new DateTime();
+        $datetime2 = new DateTime('2020-08-02 15:04:53');
+        // $datetime2 = new DateTime($datetime);
+        $interval = $datetime1->diff($datetime2);
+        $days = $interval->format('%R%a days');
+        $getDays = str_replace("+", "", $days);
+        return $getDays;
+    }
+}
