@@ -60,15 +60,15 @@ Route::post('/main/admin/update','insertAdmin@update');
 //config
 Route::post('/changeConfig','mainController@CHconfig');
 //rich
-Route::get('/main/Richdata','admin_main_rich@showRich');
+Route::get('/main/Richdata','admin_main_rich@showRich'); 
 
 Route::get('/main/rich','admin_create_rich@index');
 
-Route::post('/createRichmenu','admin_create_rich@CreateRichmenu');
+Route::post('/createRichmenu','admin_create_rich@CreateRichmenu'); //create
 
-Route::post('/useRichmenu','admin_create_rich@UseRichmenu');
+Route::post('/useRichmenu','admin_create_rich@UseRichmenu'); // use
 
-Route::post('/delRichmenu','admin_create_rich@DeleteRich');
+Route::delete('/delRichmenu/{id}','admin_create_rich@DeleteRich'); //delete
 
 
 //lineBot
@@ -81,8 +81,9 @@ Route::get('/service/card','line_studentcard@index');
 Route::post('/service/studentcard','line_studentcard@showProfile');
 
 //myid
-// Route::post('/userline/destroy/{id}', 'UserController@my_function');
-Route::delete('userline/logout/{uid}','line_login@outUser');
+Route::delete('userline/logout/{uid}','line_login@outUser'); //delete
+Route::get('userline/userall','line_login@showUser');       // all
+Route::get('userline/user/{id}','line_login@getUserByID');  // byId
 
 
 //webhook_line
@@ -91,4 +92,3 @@ Route::post('webhook','line_fulliment@handle');
 
 Route::get('/test','test@dateformat');
 Route::get('/test/{id}','test@test_profile');
-

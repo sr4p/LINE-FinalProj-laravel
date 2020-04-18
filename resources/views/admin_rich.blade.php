@@ -113,8 +113,8 @@ function ready() {
 
   function delRich(id){
     $.ajax({
-        type: "POST",
-        url: '/delRichmenu',
+        type: "DELETE",
+        url: `/delRichmenu/${id}`,
         data: {
           richId: id
         },

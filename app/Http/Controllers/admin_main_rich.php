@@ -91,29 +91,6 @@ class admin_main_rich extends Controller
             $all = ['richL', 'richS', 'richP', 'rich','richDisable'];
             return view('admin_rich', compact($all));
         }
-
-        
-        
-
-        // $richCount = Rich::count();
-        // if ($richCount == 0) {
-        //     // return view('admin_rich');
-        //     $rich = null;
-        // $richL = array("name" => '',"status" => '');
-        // $richS = array("name" => '',"status" => '');
-        // $richP = array("name" => '',"status" => '');
-        // $all = [];
-        // } else {
-        //     $rich = Rich::all();
-        //     $richL = Rich::where('richId', $rl)->get();
-        //     $richS = Rich::where('richId', $rs)->get();
-        //     $richP = Rich::where('richId', $rp)->get();
-        //     $all = ['richL', 'richS', 'richP', 'rich'];
-        //     return view('admin_rich', compact($all));
-        // }
-
-           
-
     }
 
     public function useRich(Request $req)
@@ -121,17 +98,4 @@ class admin_main_rich extends Controller
         $rich = Rich::all();
         return view('admin_rich', compact('rich', ));
     }
-
-    // public function useRich(Request $req)
-    // {
-    //     $rich = Rich::where('status','ยังไม่ได้ใช้งาน')->get();
-    //     // $rich = Rich::all();
-    //     return view('admin_rich', compact('rich',));
-    // }
-
-    // public function showUseRich(Request $req)
-    // {
-    //     $rich = Rich::where('status','ยังไม่ได้ใช้งาน')->get();
-    //     return view('admin_rich', compact('rich',));
-    // }
 }

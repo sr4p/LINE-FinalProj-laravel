@@ -16,6 +16,7 @@ class admin_create_rich extends Controller
     //
 
     private $access_token;
+    private $channelSecret;
     public $Rich_Login;
     public $Rich_Stu;
     public $Rich_Personnal;
@@ -32,7 +33,7 @@ class admin_create_rich extends Controller
 
         $input = $req->all();
         $this->access_token = $richAll[0]['channelAccessToken'];
-
+        $this->channelSecret = $richAll[0]['channelSecret'];
         var_dump($input);
 
         $json = $req->input('json');
@@ -61,6 +62,7 @@ class admin_create_rich extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $result = curl_exec($ch);
+        // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         $you = json_decode($result, true);
         $richid = $you['richMenuId'];
@@ -70,14 +72,14 @@ class admin_create_rich extends Controller
 
         //finish ---upload img Rich
         $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient("$this->access_token");
-        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => '1f91ea697c8b78f68790767ed2f1916a']);
+        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => "$this->channelSecret"]);
         $imagePath = $output;
         $contentType = 'image/png';
         $response = $bot->uploadRichMenuImage($richid, $imagePath, $contentType);
 
         File::delete('images/' . $filename);
 
-        redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย');
+        return redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย');
     }
 
     public function insertRich($richid, $nameRich)
@@ -589,13 +591,11 @@ class admin_create_rich extends Controller
         echo $response;
     }
 
-    public function DeleteRich(Request $req)
+    public function DeleteRich($id)
     {
-        $richId = $req['richId'];
-
         $non = ConfigAT::where('_id', 1)->get();
-        if ($richId != $non[0]['richmenu_login'] && $richId != $non[0]['richmenu_student'] && $richId != $non[0]['richmenu_personnal']) {
-            Rich::where('richId', $richId)->delete();
+        if ($id != $non[0]['richmenu_login'] && $id != $non[0]['richmenu_student'] && $id != $non[0]['richmenu_personnal']) {
+            Rich::where('richId', $id)->delete();
             redirect('/main/Richdata')->withSuccess('ลบริชเมนูเรียบร้อย');
         } else {
             redirect('/main/Richdata')->withError('ริชเมนูนี้ใช้งานอยู่ ไม่สามารถลบได้');

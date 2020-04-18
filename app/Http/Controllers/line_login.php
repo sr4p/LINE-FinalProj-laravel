@@ -219,6 +219,18 @@ class line_login extends Controller
         return response()->json("Logout : $name");
     }
 
+    public function showUser()
+    {
+        $user = User::all();
+        return response()->json(array($user));
+    }
+
+    public function getUserByID($id)
+    {
+        $user = User::where('username', $id)->get();
+        return response()->json(array($user));
+    }
+
 
     public function loginAgain($idStu)
     {
@@ -383,6 +395,8 @@ class line_login extends Controller
                     //
                 }
             }
+
+            
            
 
             //close LIFF
