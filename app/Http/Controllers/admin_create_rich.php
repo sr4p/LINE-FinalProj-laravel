@@ -34,7 +34,8 @@ class admin_create_rich extends Controller
         $input = $req->all();
         $this->access_token = $richAll[0]['channelAccessToken'];
         $this->channelSecret = $richAll[0]['channelSecret'];
-        var_dump($input);
+        $secret = $richAll[0]['channelSecret'];
+        // var_dump($input);
 
         $json = $req->input('json');
         $file = $req->file('file');
@@ -72,7 +73,7 @@ class admin_create_rich extends Controller
 
         //finish ---upload img Rich
         $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient("$this->access_token");
-        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => "$this->channelSecret"]);
+        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $secret]);
         $imagePath = $output;
         $contentType = 'image/png';
         $response = $bot->uploadRichMenuImage($richid, $imagePath, $contentType);
@@ -119,13 +120,14 @@ class admin_create_rich extends Controller
         $difference1 = $datetime->diff($datetime1);
         $difference2 = $datetime->diff($datetime2);
         $checkTime = false;
+        $useRichMenu = false;
 
-        if(!empty($time1) || !empty($time2)){
+        if (!empty($time1) || !empty($time2)) {
             if ($difference1->invert == 1 || $difference2->invert == 1) {
                 if ($difference1->days == 0 || $difference2->days == 0) {
                     //continue
                 } else {
-                    return response('failed', 500);  
+                    return response('failed', 500);
                 }
             } else {
                 //continue
@@ -133,7 +135,6 @@ class admin_create_rich extends Controller
         } else {
             //
         }
-        
 
         $dateDays = date("d-m-Y");
         $strFormatStu = str_replace("-", "/", $dateFormat1);
@@ -185,74 +186,32 @@ class admin_create_rich extends Controller
         $arrayUser = array_values($userStudent);
         $arrayPersonnal = array_values($userPersonnal);
 
-        
+        if (empty($time1) && empty($time2)) {
+            //ทำทันทีทั้ง stu || per
 
-            if (empty($time1) && empty($time2)) {
-                //ทำทันทีทั้ง stu || per
-                
-                if ($config_flag == true) {
+            if ($config_flag == true) {
 
-                    Config::set('linebot.RICHMENU_LOGIN', $login);
+                Config::set('linebot.RICHMENU_LOGIN', $login);
 
-                    $this->RichDefault($login);
-                    $name_rl = "เมนูเริ่มต้น";
-                    $this->updateStatus($name_rl, $login);
+                $this->RichDefault($login);
+                $name_rl = "เมนูเริ่มต้น";
+                $this->updateStatus($name_rl, $login);
 
-                    Config::set('linebot.RICHMENU_STUDENT', $student);
-                    $name_rs = "นิสิต";
-                    $this->updateStatus($name_rs, $student);
+                Config::set('linebot.RICHMENU_STUDENT', $student);
+                $name_rs = "นิสิต";
+                $this->updateStatus($name_rs, $student);
 
-                    Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
-                    $name_rp = "บุคลากร";
-                    $this->updateStatus($name_rp, $personnal);
+                Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
+                $name_rp = "บุคลากร";
+                $this->updateStatus($name_rp, $personnal);
 
-                    $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                    $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-                    $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
+                $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+                $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+                $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
 
-                    $this->update();
-                } else {
-                    //เปลี่ยนจากเดิม
-                    Config::set('linebot.RICHMENU_LOGIN', $login);
-                    $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                    $this->RichCancelDefault();
-                    $this->RichDefault($login);
-                    $name_rl = "เมนูเริ่มต้น";
-                    $this->updateStatus($name_rl, $login);
-
-                    Config::set('linebot.RICHMENU_STUDENT', $student);
-                    $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-
-                    $this->changeRichStu($arrayUser);
-                    $name_rs = "นิสิต";
-                    $this->updateStatus($name_rs, $student);
-
-                    Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
-                    $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
-                    $this->changeRichPer($arrayPersonnal);
-                    $name_rp = "บุคลากร";
-                    $this->updateStatus($name_rp, $personnal);
-
-                    $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-
-                    $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
-                    $non1 = json_decode($non);
-
-                    foreach ($non1 as $row) {
-                        foreach ($row as $key => $val) {
-                            if ($key == "richId") {
-                                $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                                $nonId = Rich::where('richId', $val);
-                                $nonId->update($nonStatus, ['upsert' => true]);
-                            }
-                        }
-                    }
-                    $this->update();
-                }
-
-            } else if (empty($time1) && !empty($time2)) {
-                //ทำ stu
-
+                $this->update();
+            } else {
+                //เปลี่ยนจากเดิม
                 Config::set('linebot.RICHMENU_LOGIN', $login);
                 $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
                 $this->RichCancelDefault();
@@ -262,70 +221,10 @@ class admin_create_rich extends Controller
 
                 Config::set('linebot.RICHMENU_STUDENT', $student);
                 $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+
                 $this->changeRichStu($arrayUser);
                 $name_rs = "นิสิต";
                 $this->updateStatus($name_rs, $student);
-
-                if ($dateDays == $strFormatPer) {
-                    Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
-                    $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
-                    $this->changeRichPer($arrayPersonnal);
-                    $name_rp = "บุคลากร";
-                    $this->updateStatus($name_rp, $personnal);
-                } else {
-                    //ตั้งเวลา
-                    $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
-                    $strFormat2 = str_replace("-", "/", $dateFormat2);
-                    $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
-                    $name_rp = "บุคลากร(กำหนดเวลาใช้งาน $strFormat2)";
-                    $this->updateStatus($name_rp, $personnal);
-                }
-
-                $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
-                $non1 = json_decode($non);
-
-                foreach ($non1 as $row) {
-                    foreach ($row as $key => $val) {
-                        if ($key == "richId") {
-                            $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                            $nonId = Rich::where('richId', $val);
-                            $nonId->update($nonStatus, ['upsert' => true]);
-                        }
-                    }
-                }
-
-                $nonStatusPer = array('status' => 'บุคลากร');
-                $perId = $check_rich[0]['richmenu_personnal'];
-                $nonIdPer = Rich::where('richId', $perId);
-                $nonIdPer->update($nonStatus, ['upsert' => true]);
-
-                $this->update();
-
-            } else if (empty($time2) && !empty($time1)) {
-                //ทำ per
-
-                Config::set('linebot.RICHMENU_LOGIN', $login);
-                $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                $this->RichCancelDefault();
-                $this->RichDefault($login);
-                $name_rl = "เมนูเริ่มต้น";
-                $this->updateStatus($name_rl, $login);
-
-                if ($dateDays == $strFormatStu) {
-                    Config::set('linebot.RICHMENU_STUDENT', $student);
-                    $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-                    $this->changeRichStu($arrayUser);
-                    $name_rs = "นิสิต";
-                    $this->updateStatus($name_rs, $student);
-                } else {
-                    //ตั้งเวลา
-                    $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-                    $strFormat1 = str_replace("-", "/", $dateFormat1);
-                    $this->setTimeRich($strFormat1, 'นิสิต', $student);
-                    $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
-                    $this->updateStatus($name_rs, $student);
-                }
 
                 Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
                 $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
@@ -334,6 +233,7 @@ class admin_create_rich extends Controller
                 $this->updateStatus($name_rp, $personnal);
 
                 $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+
                 $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
                 $non1 = json_decode($non);
 
@@ -346,69 +246,166 @@ class admin_create_rich extends Controller
                         }
                     }
                 }
-
-                $nonStatusStu = array('status' => 'นิสิต');
-                $stuId = $check_rich[0]['richmenu_student'];
-                $nonIdStu = Rich::where('richId', $stuId);
-                $nonIdStu->update($nonStatusStu, ['upsert' => true]);
-
                 $this->update();
-            } else if (!empty($time1) && !empty($time2)) {
-                //ทำเวลา stu || per
+            }
 
-                Config::set('linebot.RICHMENU_LOGIN', $login);
-                $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                $this->RichCancelDefault();
-                $this->RichDefault($login);
-                $name_rl = "เมนูเริ่มต้น";
-                $this->updateStatus($name_rl, $login);
+        } else if (empty($time1) && !empty($time2)) {
+            //ทำ stu
 
-                //ตั้งเวลา
-                $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-                $strFormat1 = str_replace("-", "/", $dateFormat1);
-                $this->setTimeRich($strFormat1, 'นิสิต', $student);
-                $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
-                $this->updateStatus($name_rs, $student);
+            Config::set('linebot.RICHMENU_LOGIN', $login);
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $this->RichCancelDefault();
+            $this->RichDefault($login);
+            $name_rl = "เมนูเริ่มต้น";
+            $this->updateStatus($name_rl, $login);
 
+            Config::set('linebot.RICHMENU_STUDENT', $student);
+            $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+            $this->changeRichStu($arrayUser);
+            $name_rs = "นิสิต";
+            $this->updateStatus($name_rs, $student);
+
+            if ($dateDays == $strFormatPer) {
+                Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
+                $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
+                $this->changeRichPer($arrayPersonnal);
+                $name_rp = "บุคลากร";
+                $this->updateStatus($name_rp, $personnal);
+            } else {
                 //ตั้งเวลา
                 $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
                 $strFormat2 = str_replace("-", "/", $dateFormat2);
                 $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
                 $name_rp = "บุคลากร(กำหนดเวลาใช้งาน $strFormat2)";
                 $this->updateStatus($name_rp, $personnal);
+            }
 
-                $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-                $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
-                $non1 = json_decode($non);
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
+            $non1 = json_decode($non);
 
-                foreach ($non1 as $row) {
-                    foreach ($row as $key => $val) {
-                        if ($key == "richId") {
-                            $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                            $nonId = Rich::where('richId', $val);
-                            $nonId->update($nonStatus, ['upsert' => true]);
-                        }
+            foreach ($non1 as $row) {
+                foreach ($row as $key => $val) {
+                    if ($key == "richId") {
+                        $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
+                        $nonId = Rich::where('richId', $val);
+                        $nonId->update($nonStatus, ['upsert' => true]);
                     }
                 }
-
-                $nonStatusStu = array('status' => 'นิสิต');
-                $stuId = $check_rich[0]['richmenu_student'];
-                $nonIdStu = Rich::where('richId', $stuId);
-                $nonIdStu->update($nonStatusStu, ['upsert' => true]);
-
-                $nonStatusPer = array('status' => 'บุคลากร');
-                $perId = $check_rich[0]['richmenu_personnal'];
-                $nonIdPer = Rich::where('richId', $perId);
-                $nonIdPer->update($nonStatusPer, ['upsert' => true]);
-
-                $this->update();
-
             }
-            Rich::whereNull('richId')->delete();
 
-            redirect('/main/Richdata')->withSuccess('ใช้งานริชเมนูเรียบร้อย');
-        
+            $nonStatusPer = array('status' => 'บุคลากร');
+            $perId = $check_rich[0]['richmenu_personnal'];
+            $nonIdPer = Rich::where('richId', $perId);
+            $nonIdPer->update($nonStatus, ['upsert' => true]);
 
+            $this->update();
+
+        } else if (empty($time2) && !empty($time1)) {
+            //ทำ per
+
+            Config::set('linebot.RICHMENU_LOGIN', $login);
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $this->RichCancelDefault();
+            $this->RichDefault($login);
+            $name_rl = "เมนูเริ่มต้น";
+            $this->updateStatus($name_rl, $login);
+
+            if ($dateDays == $strFormatStu) {
+                Config::set('linebot.RICHMENU_STUDENT', $student);
+                $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+                $this->changeRichStu($arrayUser);
+                $name_rs = "นิสิต";
+                $this->updateStatus($name_rs, $student);
+            } else {
+                //ตั้งเวลา
+                $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+                $strFormat1 = str_replace("-", "/", $dateFormat1);
+                $this->setTimeRich($strFormat1, 'นิสิต', $student);
+                $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
+                $this->updateStatus($name_rs, $student);
+            }
+
+            Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
+            $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
+            $this->changeRichPer($arrayPersonnal);
+            $name_rp = "บุคลากร";
+            $this->updateStatus($name_rp, $personnal);
+
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
+            $non1 = json_decode($non);
+
+            foreach ($non1 as $row) {
+                foreach ($row as $key => $val) {
+                    if ($key == "richId") {
+                        $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
+                        $nonId = Rich::where('richId', $val);
+                        $nonId->update($nonStatus, ['upsert' => true]);
+                    }
+                }
+            }
+
+            $nonStatusStu = array('status' => 'นิสิต');
+            $stuId = $check_rich[0]['richmenu_student'];
+            $nonIdStu = Rich::where('richId', $stuId);
+            $nonIdStu->update($nonStatusStu, ['upsert' => true]);
+
+            $this->update();
+        } else if (!empty($time1) && !empty($time2)) {
+            //ทำเวลา stu || per
+
+            Config::set('linebot.RICHMENU_LOGIN', $login);
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $this->RichCancelDefault();
+            $this->RichDefault($login);
+            $name_rl = "เมนูเริ่มต้น";
+            $this->updateStatus($name_rl, $login);
+
+            //ตั้งเวลา
+            $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
+            $strFormat1 = str_replace("-", "/", $dateFormat1);
+            $this->setTimeRich($strFormat1, 'นิสิต', $student);
+            $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
+            $this->updateStatus($name_rs, $student);
+
+            //ตั้งเวลา
+            $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
+            $strFormat2 = str_replace("-", "/", $dateFormat2);
+            $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
+            $name_rp = "บุคลากร(กำหนดเวลาใช้งาน $strFormat2)";
+            $this->updateStatus($name_rp, $personnal);
+
+            $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
+            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
+            $non1 = json_decode($non);
+
+            foreach ($non1 as $row) {
+                foreach ($row as $key => $val) {
+                    if ($key == "richId") {
+                        $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
+                        $nonId = Rich::where('richId', $val);
+                        $nonId->update($nonStatus, ['upsert' => true]);
+                    }
+                }
+            }
+
+            $nonStatusStu = array('status' => 'นิสิต');
+            $stuId = $check_rich[0]['richmenu_student'];
+            $nonIdStu = Rich::where('richId', $stuId);
+            $nonIdStu->update($nonStatusStu, ['upsert' => true]);
+
+            $nonStatusPer = array('status' => 'บุคลากร');
+            $perId = $check_rich[0]['richmenu_personnal'];
+            $nonIdPer = Rich::where('richId', $perId);
+            $nonIdPer->update($nonStatusPer, ['upsert' => true]);
+
+            $this->update();
+
+        }
+        Rich::whereNull('richId')->delete();
+
+        redirect('/main/Richdata')->withSuccess('ใช้งานริชเมนูเรียบร้อย');
     }
 
     public function update()

@@ -23,7 +23,7 @@ class test extends Controller
 
         echo "<br>";
 
-        $tt1 = "04/18/2020";
+        $tt1 = "04/17/2020";
         $ddddddd = date("Y-m-d", strtotime($tt1));
 
         $datetime1 = new DateTime();
@@ -31,15 +31,15 @@ class test extends Controller
         $difference = $datetime1->diff($datetime2);
         dd($difference);
 
-        if ($difference->invert == 1) {
-            if($difference->days == 0){
-                //continue
-            } else {
-                redirect('/main/Richdata')->withError('กรุณากำหนดเวลาใหม่');
-            }
-        } else {
-            //continue
-        }
+        // if ($difference->invert == 1) {
+        //     if($difference->days == 0){
+        //         //continue
+        //     } else {
+        //         redirect('/main/Richdata')->withError('กรุณากำหนดเวลาใหม่');
+        //     }
+        // } else {
+        //     //continue
+        // }
 
 // $tt = strtotime($tt1);
         // $newformat = date('Y-m-d',$tt);

@@ -28,6 +28,7 @@ class line_login extends Controller
         $data->picture = $picline;
         $data->displayName = $displayname;
         $data->status = 'ใช้งานอยู่';
+        $data->password_expire = '2020-06-02';
         
         foreach ($arrData as $key => $val) {
             if(is_array($val)) {
@@ -60,8 +61,6 @@ class line_login extends Controller
         $dt->update($profile, ['upsert' => true]);
         $this->Out_rich($uidline);
     }
-
-    
 
     public function pushMsg($arrayPostData){
         $strUrl = "https://api.line.me/v2/bot/message/push";
@@ -395,9 +394,6 @@ class line_login extends Controller
                     //
                 }
             }
-
-            
-           
 
             //close LIFF
             echo '<script src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>';

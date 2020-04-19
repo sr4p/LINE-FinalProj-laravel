@@ -47,8 +47,6 @@ class admin_main_rich extends Controller
                 }
             }
         }
-
-
         
         $countId = Rich::count();
 
@@ -66,28 +64,28 @@ class admin_main_rich extends Controller
             $richS = null;
             $richP = null;
 
-            if($rl != ""){
-                $richL = Rich::where('richId', $rl)->get();
-            } else {
-                $richL = array("name" => '',"status" => '');
-            }
+            // if($rl != ""){
+            //     $richL = Rich::where('richId', $rl)->get();
+            // } else {
+            //     $richL = array("name" => '',"status" => '');
+            // }
 
-            if($rs != ""){
-                $richS = Rich::where('richId', $rs)->get();
-            } else {
-                $richS = array("name" => '',"status" => '');
-            }
+            // if($rs != ""){
+            //     $richS = Rich::where('richId', $rs)->get();
+            // } else {
+            //     $richS = array("name" => '',"status" => '');
+            // }
 
-            if($rp != ""){
-                $richP = Rich::where('richId', $rp)->get();
-            } else {
-                $richP = array("name" => '',"status" => '');
-            }
+            // if($rp != ""){
+            //     $richP = Rich::where('richId', $rp)->get();
+            // } else {
+            //     $richP = array("name" => '',"status" => '');
+            // }
 
 
-            // $richL = Rich::where('richId', $rl)->get();
-            // $richS = Rich::where('richId', $rs)->get();
-            // $richP = Rich::where('richId', $rp)->get();
+            $richL = Rich::where('richId', $rl)->get();
+            $richS = Rich::where('richId', $rs)->get();
+            $richP = Rich::where('richId', $rp)->get();
             $all = ['richL', 'richS', 'richP', 'rich','richDisable'];
             return view('admin_rich', compact($all));
         }

@@ -79,7 +79,7 @@ class line_fulliment extends Controller
                 $day = $this->pass_expire($timePass);
                 if ($day <= 60) {
                     $this->pushTimePass($userId, $timePass);
-                    $agent->reply("รหัสของคุณจะหมดอายุใน $day วัน หากคุณต้องการเปลี่ยนรหัสผ่าน กรุณากดปุ่มเพื่อเปลี่ยนหรัสผ่าน");
+                    $agent->reply("รหัสของคุณจะหมดอายุใน $day วัน หากคุณต้องการเปลี่ยนรหัสผ่าน กรุณากดปุ่ม 'เปลี่ยนหรัสผ่าน'");
                     $text = $this->encodeDataChw($userId, $un);
                     $url = "https://myid.buu.ac.th/chgpwdLine/" . $text;
                     $this->pushFlex($userId, $url);
