@@ -73,11 +73,15 @@ require_once '../vendor/autoload.php';
 
   <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: rgb(226, 196, 123);">
     <div class="container">
-      <a class="navbar-brand " href="/main">LINE CHATBOT BUU</a>
+      <a class="navbar-brand " href="/main">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Buu-logo11.png" width="50" height="50" class="" alt="">
+      LINE CHATBOT BUU
+      </a>
     </div>
+
     <div class="dropdown">
-      <button class="outline-primary my-2 my-sm-0 dropdown-toggle" style="margin-left:55px" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span id="usernameShow"></span>
+      <button class="outline-primary my-2 my-sm-0 dropdown-toggle" style="margin-left:55px;margin-right:50px" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <img src="https://img.icons8.com/ios-glyphs/30/000000/person-male.png"/><span style="font-size: 17px;" id="usernameShow"></span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
         <button class="dropdown-item" name="submit" type="button" onclick="removeUname()">ออกจากระบบ</button>
@@ -87,9 +91,17 @@ require_once '../vendor/autoload.php';
   </nav>
   <div class="limiter">
     <div class="container-main">
-      <div class="wrap-login100 p-t-50 p-b-10">
-        <span class="text-form p-b-51 ">ระบบสารสนเทศเพื่อจัดการ LINE CHATBOT</span>
+      <div class="wrap-login100 p-t-20 p-b-10">
+        <span class="text-form p-b-30 " style="font-size: 21px;text-decoration: underline;">ระบบสารสนเทศเพื่อจัดการ LINE CHATBOT</span>
+        <span>
+        @if(Session::has('success'))
+    <div class="alert alert-success" style="width:auto;text-align: center;">
+        {{Session::get('success')}}
+    </div>
+@endif
+        </span>
       </div>
+      
     </div>
   </div>
 

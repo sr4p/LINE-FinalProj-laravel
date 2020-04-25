@@ -126,7 +126,7 @@ class daily extends Command
                     $day = $this->pass_expire($timePass);
 
                     if (is_numeric($un)) {
-                        if ($day <= 60) {
+                        if ($day <= 30) {
                             $this->pushTimePass($uid, $timePass);
                             $text = $this->encodeDataChw($uid, $un);
                             $url = "https://myid.buu.ac.th/chgpwdLine/" . $text;

@@ -14,15 +14,6 @@ class mainController extends Controller
         $cat = $req['cat'];
         $cs = $req['cs'];
 
-        // $array = Config::get('linebot');
-        // $array['ACCESS_TOKEN'] = $cat;
-        // $array['CHANNEL_SECRET'] = $cs;
-        // $data = var_export($array, 1);
-
-        // if (File::put(app_path() . '/config/linebot.php', "<?php\n return $data ;")) {
-        //     // Successful, return Redirect...
-        // }
-
         $createId = ConfigAT::count();
         $tal = $createId + 1;
 
@@ -39,6 +30,7 @@ class mainController extends Controller
 
         Config::set('linebot.ACCESS_TOKEN', $cat);
         Config::set('linebot.CHANNEL_SECRET', $cs);
+        redirect('/main')->withSuccess('ตั้งค่า LINE CHATBOT เรียบร้อย');
     }
 
     public function showUser(Request $req)

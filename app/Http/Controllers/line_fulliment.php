@@ -51,6 +51,7 @@ class line_fulliment extends Controller
                     } else {
                         $teach = false;
                         $sta = 'บุคลากร';
+                        $timePass = $userName[0]['password_expire'];
                     }
                 }if ($key == 'status' && $val == 'ใช้งานอยู่') {
                     $flag = true;
@@ -77,7 +78,7 @@ class line_fulliment extends Controller
                 $this->pushFlexPassword($userId, $url);
             } else if ('password expire' == $intent) {
                 $day = $this->pass_expire($timePass);
-                if ($day <= 60) {
+                if ($day <= 30) {
                     $this->pushTimePass($userId, $timePass);
                     $agent->reply("รหัสของคุณจะหมดอายุใน $day วัน หากคุณต้องการเปลี่ยนรหัสผ่าน กรุณากดปุ่ม 'เปลี่ยนหรัสผ่าน'");
                     $text = $this->encodeDataChw($userId, $un);
