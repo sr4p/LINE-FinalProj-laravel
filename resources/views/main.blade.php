@@ -78,7 +78,6 @@ require_once '../vendor/autoload.php';
       LINE CHATBOT BUU
       </a>
     </div>
-
     <div class="dropdown">
       <button class="outline-primary my-2 my-sm-0 dropdown-toggle" style="margin-left:55px;margin-right:50px" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <img src="https://img.icons8.com/ios-glyphs/30/000000/person-male.png"/><span style="font-size: 17px;" id="usernameShow"></span>
@@ -101,7 +100,7 @@ require_once '../vendor/autoload.php';
 @endif
         </span>
       </div>
-      
+
     </div>
   </div>
 
