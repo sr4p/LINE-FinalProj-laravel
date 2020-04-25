@@ -315,7 +315,7 @@ require_once '../vendor/autoload.php';
       <img src="https://img.icons8.com/ios-glyphs/30/000000/person-male.png"/><span style="font-size: 17px;" id="usernameShow"></span>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <button class="dropdown-item" name="submit" type="button" onclick="removeUname()">ออกจากระบบ</button>
+        <button class="dropdown-item" name="submit" type="button" onclick="removeUname()"><img src="https://img.icons8.com/ios-glyphs/20/000000/door-opened.png"/>ออกจากระบบ</button>
       </div>
     </div>
     </div>
