@@ -53,7 +53,8 @@ ADD www.conf /usr/local/etc/php-fpm.d/www.conf
 ADD supervisord.conf /etc/supervisord.conf
 
 #install composer
-RUN curl -s http://getcomposer.org/installer | php && mv ./composer.phar /usr/local/bin/composer
+RUN curl -s http://getcomposer.org/installer | php
+# RUN curl -s http://getcomposer.org/installer | php && mv ./composer.phar /usr/local/bin/composer
 
 
 
@@ -69,6 +70,7 @@ RUN curl -s http://getcomposer.org/installer | php && mv ./composer.phar /usr/lo
 
 
 #install nginx
+# RUN apk add nginx
 RUN apk add nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 

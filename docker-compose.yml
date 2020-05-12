@@ -10,7 +10,7 @@ services:
       image: "php7-docker"
       container_name: buuline-backend-line
       ports:
-          - "8881:80"
+          - "8181:80"
       networks:
           - db-line
       volumes:

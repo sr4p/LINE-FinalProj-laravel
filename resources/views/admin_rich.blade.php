@@ -454,7 +454,7 @@ $(document).on('click','#switch-success2',function(e){
                 <div class="modal-content">
                 <!-- <div class="alert alert-danger alert-danger-dt" style="display:none"></div> -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="useRichModelLabel">ใช้งานริชเมนู</h4>
+                        <h4 class="modal-title" id="useRichModelLabel">ตั้งค่าใช้งานริชเมนู</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -606,9 +606,9 @@ $(document).on('click','#switch-success2',function(e){
             <table class="table table-bordered" id="">
                 <thead>
                     <tr style="background-color: rgb(226, 196, 123);">
-                        <th scope="col" class="text-center">ชื่อริชเมนู</th>
-                        <th scope="col" class="text-center">การใช้งาน</th>
-                        <th scope="col" class="text-center">เครื่องมือ</th>
+                        <th scope="col" class="text-center" style="width:34%">ชื่อริชเมนู</th>
+                        <th scope="col" class="text-center" style="width:33%">การใช้งาน</th>
+                        <th scope="col" class="text-center" style="width:33%">เครื่องมือ</th>
                     </tr>
                 </thead>
                 <tbody id="myTable">
