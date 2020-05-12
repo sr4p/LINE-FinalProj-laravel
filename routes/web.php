@@ -68,11 +68,15 @@ Route::post('/createRichmenu','admin_create_rich@CreateRichmenu'); //create
 
 Route::post('/useRichmenu','admin_create_rich@UseRichmenu'); // use
 
-Route::delete('/delRichmenu/{id}','admin_create_rich@DeleteRich'); //delete
+Route::post('/cancelRichmenu','admin_create_rich@CancelTimeRich'); // cancel
+
+Route::delete('/delRichmenu','admin_create_rich@DeleteRich'); //delete
 
 
 //lineBot
 Route::get('/line/login','line_login@index');
+
+Route::get('/line/close','line_login@close');
 
 Route::post('/line/registerBot','line_login@PostApi');
 
@@ -92,3 +96,5 @@ Route::post('webhook','line_fulliment@handle');
 
 Route::get('/test','test@dateformat');
 Route::get('/test/{id}','test@test_profile');
+
+Route::get('/testlogin','test@test_login'); //login

@@ -7,6 +7,8 @@ use Config;
 use DateTime;
 use File;
 use Illuminate\Http\Request;
+use Redirect;
+use Validator;
 use \App\ConfigAT;
 use \App\Rich;
 use \App\User;
@@ -26,8 +28,30 @@ class admin_create_rich extends Controller
         return view('admin_richmenu');
     }
 
+    public function CancelTimeRich(Request $req)
+    {
+        $id = $req->input('richId');
+        $this->updateStatusAfterCancel($id);
+        redirect()->back()->withSuccess('ยกเลิกเมนูเรียบร้อย');
+    }
+
     public function CreateRichmenu(Request $req)
     {
+        $validator = Validator::make($req->all(), [
+            'name' => 'required|max:20',
+            'file' => 'required|mimes:png,jpeg|max:1024',
+            'json' => 'required|json',
+        ],
+            [
+                'name.required' => 'ตั้งชื่อริชเมนู',
+                'name.max' => 'ตั้งชื่อริชเมนูไม่เกิน 20 ตัวอักษร',
+                'file.required' => 'อัพโหลดรูป',
+                'file.mimes' => 'อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG',
+                'file.max' => 'อัพโหลดไฟล์รูปภาพที่มีขนาดไม่เกิน 1 MB',
+                'json.required' => 'ใส่โค้ด JSON',
+                'json.json' => 'ใส่โค้ด JSON ให้ถูกต้อง',
+            ]);
+
         $countId = ConfigAT::count();
         $richAll = ConfigAT::where('_id', $countId)->get();
 
@@ -35,52 +59,101 @@ class admin_create_rich extends Controller
         $this->access_token = $richAll[0]['channelAccessToken'];
         $this->channelSecret = $richAll[0]['channelSecret'];
         $secret = $richAll[0]['channelSecret'];
-        // var_dump($input);
+        $err_json = [];
+        $err_img = [];
+        $err_json_detail = [];
 
-        $json = $req->input('json');
-        $file = $req->file('file');
-        $name = $req->input('name');
+        if ($validator->passes()) {
 
-        $filename = $file->getClientOriginalName();
-        $location = 'images';
-        $file->move($location, $filename);
+            $json = $req->input('json');
+            $file = $req->file('file');
+            $name = $req->input('name');
 
-        $pa = $file->getClientOriginalName();
+            $filename = $file->getClientOriginalName();
+            $location = 'images';
+            $file->move($location, $filename);
 
-        $output = public_path("images\\" . $pa);
+            $pa = $file->getClientOriginalName();
 
-        //finish ---create Rich
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.line.me/v2/bot/richmenu");
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-            "Authorization: Bearer $this->access_token",
-            "cache-control: no-cache",
-        ));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($ch);
-        // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        $you = json_decode($result, true);
-        $richid = $you['richMenuId'];
+            $ty = $file->getClientMimeType();
 
-        echo $you['richMenuId'];
-        $this->insertRich($richid, $name);
+            $output = public_path("images\\" . $pa);
 
-        //finish ---upload img Rich
-        $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient("$this->access_token");
-        $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $secret]);
-        $imagePath = $output;
-        $contentType = 'image/png';
-        $response = $bot->uploadRichMenuImage($richid, $imagePath, $contentType);
+            list($width, $height) = getimagesize($output);
+            // $err_json = [];
+            // $err_img = [];
 
-        File::delete('images/' . $filename);
+        if (($width == 2500 && $height == 1686) 
+        || ($width == 2500 && $height == 843) 
+        || ($width == 1200 && $height == 810) 
+        || ($width == 1200 && $height == 405)
+        || ($width == 800 && $height == 540)
+        || ($width == 800 && $height == 270)) {
+            
+        } else {
+            File::delete('images/' . $filename);
+            $err_img = ['img' => ["ขนาดของรูปนี้($width x $height) ไม่สามารถใช้งานได้ โปรดเลือกไฟล์รูปใหม่"]];
+            return response()->json(['error' => $validator->errors(),'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
+            //
+        }
 
-        return redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย');
+            // finish ---create Rich
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://api.line.me/v2/bot/richmenu");
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Content-Type: application/json",
+                "Authorization: Bearer $this->access_token",
+                "cache-control: no-cache",
+            ));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $result = curl_exec($ch);
+            // $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            $you = json_decode($result, true);
+            $richid = null;
+            if (!empty($you['richMenuId'])) {
+                $richid = $you['richMenuId'];
+            } else {
+                //
+            }
+
+            if (array_key_exists('message', $you)) {
+                File::delete('images/' . $filename);
+                $err_json_detail = $result;
+                $err_json = ['js' => ['โค้ด JSON สำหรับสร้างริชเมนู ไม่ถูกต้อง']];
+                return response()->json(['error' => $validator->errors(), 'error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
+            } else {
+                //finish ---upload img Rich
+                $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient("$this->access_token");
+                $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $secret]);
+                $imagePath = $output;
+                $contentType = $ty;
+                $response = $bot->uploadRichMenuImage($richid, $imagePath, $contentType);
+                $getMsg = $response->getRawBody();
+                $arr = json_decode($getMsg, true);
+
+                if (!empty($arr['message'])) {
+                    $this->RemoveRich($richid);
+                    File::delete('images/' . $filename);
+                    $err_img = ['img' => ['ไฟล์รูปไม่สามารถใช้งานได้ โปรดเลือกไฟล์รูปใหม่']];
+                    return response()->json(['error' => $validator->errors(), 'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
+                } else {
+
+                    $this->insertRich($richid, $name);
+
+                    File::delete('images/' . $filename);
+
+                    redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย');
+                }
+            }
+        }
+
+        return response()->json(['error' => $validator->errors(),'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
+        
     }
 
     public function insertRich($richid, $nameRich)
@@ -89,6 +162,8 @@ class admin_create_rich extends Controller
         $data->name = $nameRich;
         $data->status = 'ยังไม่ได้ใช้งาน';
         $data->richId = $richid;
+        $data->timeRich = '-';
+        $data->timeType = '-';
         $data->save();
         return "Success";
     }
@@ -121,20 +196,6 @@ class admin_create_rich extends Controller
         $difference2 = $datetime->diff($datetime2);
         $checkTime = false;
         $useRichMenu = false;
-
-        if (!empty($time1) || !empty($time2)) {
-            if ($difference1->invert == 1 || $difference2->invert == 1) {
-                if ($difference1->days == 0 || $difference2->days == 0) {
-                    //continue
-                } else {
-                    return response('failed', 500);
-                }
-            } else {
-                //continue
-            }
-        } else {
-            //
-        }
 
         $dateDays = date("d-m-Y");
         $strFormatStu = str_replace("-", "/", $dateFormat1);
@@ -239,13 +300,19 @@ class admin_create_rich extends Controller
 
                 foreach ($non1 as $row) {
                     foreach ($row as $key => $val) {
+
                         if ($key == "richId") {
-                            $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                            $nonId = Rich::where('richId', $val);
-                            $nonId->update($nonStatus, ['upsert' => true]);
-                        }
+                                $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
+                                $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
+                                $nonId->update($nonStatus, ['upsert' => true]);
+                        } 
                     }
                 }
+
+                Rich::where('name', 'exists', false)->delete();
+                // Rich::whereNull('richId', $id)->delete();
+
+
                 $this->update();
             }
 
@@ -276,19 +343,19 @@ class admin_create_rich extends Controller
                 $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
                 $strFormat2 = str_replace("-", "/", $dateFormat2);
                 $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
-                $name_rp = "บุคลากร(กำหนดเวลาใช้งาน $strFormat2)";
+                $name_rp = "กำหนดเวลาใช้งาน";
                 $this->updateStatus($name_rp, $personnal);
             }
 
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
+            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->whereNull('timeRich')->get();
             $non1 = json_decode($non);
 
             foreach ($non1 as $row) {
                 foreach ($row as $key => $val) {
                     if ($key == "richId") {
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                        $nonId = Rich::where('richId', $val);
+                        $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
                         $nonId->update($nonStatus, ['upsert' => true]);
                     }
                 }
@@ -322,7 +389,7 @@ class admin_create_rich extends Controller
                 $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
                 $strFormat1 = str_replace("-", "/", $dateFormat1);
                 $this->setTimeRich($strFormat1, 'นิสิต', $student);
-                $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
+                $name_rs = "กำหนดเวลาใช้งาน";
                 $this->updateStatus($name_rs, $student);
             }
 
@@ -340,7 +407,7 @@ class admin_create_rich extends Controller
                 foreach ($row as $key => $val) {
                     if ($key == "richId") {
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                        $nonId = Rich::where('richId', $val);
+                        $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
                         $nonId->update($nonStatus, ['upsert' => true]);
                     }
                 }
@@ -366,25 +433,25 @@ class admin_create_rich extends Controller
             $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
             $strFormat1 = str_replace("-", "/", $dateFormat1);
             $this->setTimeRich($strFormat1, 'นิสิต', $student);
-            $name_rs = "นิสิต(กำหนดเวลาใช้งาน $strFormat1)";
+            $name_rs = "กำหนดเวลาใช้งาน";
             $this->updateStatus($name_rs, $student);
 
             //ตั้งเวลา
             $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
             $strFormat2 = str_replace("-", "/", $dateFormat2);
             $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
-            $name_rp = "บุคลากร(กำหนดเวลาใช้งาน $strFormat2)";
+            $name_rp = "กำหนดเวลาใช้งาน";
             $this->updateStatus($name_rp, $personnal);
 
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
-            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
+            $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->where('timeRich', '!=', null)->where('timeType', '!=', null)->get();
             $non1 = json_decode($non);
 
             foreach ($non1 as $row) {
                 foreach ($row as $key => $val) {
                     if ($key == "richId") {
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
-                        $nonId = Rich::where('richId', $val);
+                        $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
                         $nonId->update($nonStatus, ['upsert' => true]);
                     }
                 }
@@ -406,6 +473,7 @@ class admin_create_rich extends Controller
         Rich::whereNull('richId')->delete();
 
         redirect('/main/Richdata')->withSuccess('ใช้งานริชเมนูเรียบร้อย');
+       
     }
 
     public function update()
@@ -588,14 +656,16 @@ class admin_create_rich extends Controller
         echo $response;
     }
 
-    public function DeleteRich($id)
+    public function DeleteRich(Request $req)
     {
+        $id = $req->input('richId');
         $non = ConfigAT::where('_id', 1)->get();
         if ($id != $non[0]['richmenu_login'] && $id != $non[0]['richmenu_student'] && $id != $non[0]['richmenu_personnal']) {
             Rich::where('richId', $id)->delete();
-            redirect('/main/Richdata')->withSuccess('ลบริชเมนูเรียบร้อย');
+            $this->RemoveRich($id);
+            redirect()->back()->withSuccess('ลบริชเมนูเรียบร้อย');
         } else {
-            redirect('/main/Richdata')->withError('ริชเมนูนี้ใช้งานอยู่ ไม่สามารถลบได้');
+            redirect()->back()->withError('ริชเมนูนี้ใช้งานอยู่ ไม่สามารถลบได้');
         }
     }
 
@@ -622,4 +692,80 @@ class admin_create_rich extends Controller
         }
     }
 
+    public function RemoveRich($richid)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.line.me/v2/bot/richmenu/$richid",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "DELETE",
+            CURLOPT_HTTPHEADER => array(
+                "Accept: */*",
+                "Connection: Keep-Alive",
+                "Content-type: application/x-www-form-urlencoded;charset=UTF-8",
+                "Authorization: Bearer $this->access_token",
+                "Accept-Encoding: gzip, deflate, br",
+                "Cache-Control: no-cache",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+    }
+
+    public function updateStatusAfterCancel($id)
+    {
+        $get = array('status' => 'ยังไม่ได้ใช้งาน', 'timeRich' => '', 'timeType' => '');
+        $up = Rich::where('richId', $id);
+        $up->update($get, ['upsert' => true]);
+    }
+
+    public function checkImg($width, $height,$filename)
+    {
+        $err_img = [];
+        if ($width != 2500 && $height != 1686) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        }
+
+        if ($width != 2500 && $height != 843) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        }
+
+        if ($width != 1200 && $height != 810) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        }
+
+        if ($width != 1200 && $height != 405) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        }
+
+        if ($width != 800 && $height != 540) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        }
+
+        if ($width != 800 && $height != 270) {
+            File::delete('images/' . $filename);
+            $err_img = ['msg' => 'ขนาดของรูปไม่ถูกต้อง กรุณาเลือกไฟล์รูปใหม่'];
+            return response()->json(['error' => $validator->errors()->all(), 'error_ceateImg' => $err_img]);
+        } else {
+            //
+        }
+    }
 }

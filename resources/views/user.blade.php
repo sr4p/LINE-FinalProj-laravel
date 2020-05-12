@@ -16,7 +16,7 @@ require_once '../vendor/autoload.php';
   <link rel="stylesheet" type="text/css" href="{{asset('css/util.css')}}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>ข้อมูลนิสิต</title>
+  <title>ข้อมูลผู้ใช้ไลน์</title>
 </head>
 
 <body>
@@ -124,14 +124,28 @@ require_once '../vendor/autoload.php';
           shouldSwitch = false;
           x = rows[i].getElementsByTagName("TD")[n];
           y = rows[i + 1].getElementsByTagName("TD")[n];
+          var newSplit = x.innerHTML.split('/').join("-").split(" ")
+          var changeFormat = newSplit[0].split('-')
+          var setupDate = changeFormat[2] + "-" + changeFormat[1] + "-" + changeFormat[0] + "T" + newSplit[1]
+          var newSplit2 = y.innerHTML.split('/').join("-").split(" ")
+          var changeFormat2 = newSplit2[0].split('-')
+          var setupDate2 = changeFormat2[2] + "-" + changeFormat2[1] + "-" + changeFormat2[0] + "T" + newSplit2[1]
+          // console.log(new Date(setupDate))
+          //console.log(new Date(newSplit[0]))
           if (dir == "asc") {
-            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            
+            if (new Date(setupDate) > new Date(setupDate2)) {
               shouldSwitch = true;
               $("#sortBtn2").attr('class', 'fa fa-sort-down');
               break;
             }
+            // array.sort(function(a, b) {
+            //   a = new Date(a.dateModified);
+            //   b = new Date(b.dateModified);
+            //   return a > b ? -1 : a < b ? 1 : 0;
+            // });
           } else if (dir == "desc") {
-            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            if (new Date(setupDate) < new Date(setupDate2)) {
               shouldSwitch = true;
               $("#sortBtn2").attr('class', 'fa fa-sort-up');
               break;
@@ -140,6 +154,7 @@ require_once '../vendor/autoload.php';
         }
         if (shouldSwitch) {
           rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          //console.log( rows[i])
           switching = true;
           switchcount++;
         } else {
@@ -150,6 +165,7 @@ require_once '../vendor/autoload.php';
         }
       }
     }
+
     var idGlobal
     var unGlobal
 
@@ -185,16 +201,24 @@ require_once '../vendor/autoload.php';
           username: un
         },
         success: function(a4) {
-          // var obj = JSON.parse(a4)
           document.getElementById('username').innerHTML = "ชื่อผู้ใช้: " + a4[0].username;
           document.getElementById('nameMD').innerHTML = "ชื่อ: " + a4[0].name_thai + " " + a4[0].surname_thai;
           document.getElementById('branchMD').innerHTML = "วิทยาเขต: " + a4[0].campus_thai;
           document.getElementById('facMD').innerHTML = "คณะ: " + a4[0].faculty_thai;
-          document.getElementById('fac1MD').innerHTML = "สาขา: " + a4[0].program_thai;
-          document.getElementById('levelMD').innerHTML = "ระดับการศึกษา: " + a4[0].level_thai;
-          document.getElementById('departMD').innerHTML = "แผนก: " + a4[0].department_thai;
-          document.getElementById('positionMD').innerHTML = "ตำแหน่ง: " + a4[0].position_thai;
-          //console.log(a4);
+          if (a4[0].program_thai == undefined && a4[0].level_thai == undefined) {
+            document.getElementById('fac1MD').innerHTML = "สาขา: -";
+            document.getElementById('levelMD').innerHTML = "ระดับการศึกษา: -";
+          } else {
+            document.getElementById('fac1MD').innerHTML = "สาขา: " + a4[0].program_thai;
+            document.getElementById('levelMD').innerHTML = "ระดับการศึกษา: " + a4[0].level_thai;
+          }
+          if (a4[0].department_thai == undefined && a4[0].position_thai == undefined) {
+            document.getElementById('departMD').innerHTML = "แผนก: -";
+            document.getElementById('positionMD').innerHTML = "ตำแหน่ง: -";
+          } else {
+            document.getElementById('departMD').innerHTML = "แผนก: " + a4[0].department_thai;
+            document.getElementById('positionMD').innerHTML = "ตำแหน่ง: " + a4[0].position_thai;
+          }
         },
         error: function(e) {
           console.log(e);
@@ -207,8 +231,6 @@ require_once '../vendor/autoload.php';
     }
 
     function pushMessage() {
-      // console.log(idGlobal)
-      // console.log(document.getElementById("message-text1").value)
       var dataSend = {
         uid: idGlobal,
         msg: document.getElementById("message-text1").value
@@ -247,6 +269,15 @@ require_once '../vendor/autoload.php';
     </div>
   </nav>
 
+  <div class="limiter">
+    <div class="container-main">
+      <div class="wrap-login100 p-t-15 p-b-10">
+      <!-- <span class="text-form p-b-10 ">ข้อมูลผู้ใช้ไลน์</span> -->
+      <span class="text-form" style="font-size: 21px;text-decoration: underline;">ข้อมูลผู้ใช้ไลน์</span>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <form class="form-inline">
       <div class="form-group mt-2 mb-2 ml-auto p-2" style="margin-right: 7px">
@@ -263,7 +294,7 @@ require_once '../vendor/autoload.php';
             <th scope="col" class="text-center" style="width:200px;">ชื่อ - นามสกุล</th>
             <th scope="col" class="text-center" style="width:120px;">ชื่อไลน์</th>
             <th scope="col" class="text-center" style="width:100px;">สถานะ</th>
-            <th onclick="sortTableTime(0)" scope="col" class="text-center" style="width:220px; cursor:pointer;">วันและเวลาที่เข้าสู่ระบบ <i id="sortBtn2" class="fa fa-sort-down"></i></th>
+            <th onclick="sortTableTime(5)" scope="col" class="text-center" style="width:220px; cursor:pointer;">วันและเวลาที่เข้าสู่ระบบ <i id="sortBtn2" class="fa fa-sort-down"></i></th>
             <th scope="col" class="text-center" style="width:250px;">เครื่องมือ</th>
           </tr>
         </thead>
@@ -271,7 +302,7 @@ require_once '../vendor/autoload.php';
           @foreach($a2 as $item)
           <tr>
             <td class="text-center">{{$item->username}}</td>
-            <td class="text-center"><img src="{{ $item->picture }}" width="110" height="110" /></td>
+            <td class="text-center"><img src="{{ $item->picture }}" width="90" height="90" /></td>
             <td class="text-center">
               {{$item->prefix_thai}}{{$item->name_thai}} {{$item->surname_thai}}
             </td>
@@ -280,9 +311,9 @@ require_once '../vendor/autoload.php';
             <td class="text-center">{{$item->status}}</td>
             <td class="text-center">{{$item->updated_at->format('d/m/Y H:i:s')}}</td>
             <td class="text-center">
-              <button class="btn btn-success" style="margin-bottom:10px" type="button" data-toggle="modal" data-target="#messageModel" onclick="push('{{$item->userId}}')">ส่งข้อความ <i class="fa fa-envelope"></i></button>
-              <button class="btn btn-info" type="button" data-toggle="modal" data-target="#infoModel" onclick="showInfo('{{$item->username}}')">ดูข้อมูล <i class="fa fa-info-circle"></i></button>
-              <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#changeStModal" onclick="change('{{$item->username}}','{{$item->userId}}')">ลบ <i class="fa fa-trash"></i></button>
+            <button class="btn btn-success rounded-circle" type="button" title="ส่งข้อความ" data-toggle="modal" data-target="#messageModel" onclick="push('{{$item->userId}}')"><i class="fa fa-envelope"></i></button>
+              <button class="btn btn-info rounded-circle" type="button" title="ดูข้อมูล" data-toggle="modal" data-target="#infoModel" onclick="showInfo('{{$item->username}}')"><i class="fa fa-info-circle"></i></button>
+              <button class="btn btn-danger rounded-circle" type="button" title="ออกจากระบบ" data-toggle="modal" data-target="#changeStModal" onclick="change('{{$item->username}}','{{$item->userId}}')"><i class="fa fa-sign-out"></i></button>
             </td>
           </tr>
 
@@ -296,11 +327,11 @@ require_once '../vendor/autoload.php';
                   </button>
                 </div>
                 <div class="modal-body">
-                  <a>คุณต้องการลบผู้ใช้คนนี้ใช่หรือไม่</a>
+                <a>คุณต้องการให้ผู้ใช้คนนี้ออกจากระบบไลน์ใช่หรือไม่</a>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                  <button type="button" class="btn btn-danger" onclick="changeStatus()" data-dismiss="modal">ยืนยัน</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                  <button type="button" class="btn btn-primary" onclick="changeStatus()" data-dismiss="modal">ยืนยัน</button>
                 </div>
               </div>
             </div>
@@ -324,8 +355,8 @@ require_once '../vendor/autoload.php';
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                  <button type="button" class="btn btn-success" onclick="pushMessage()" data-dismiss="modal">ส่งข้อความ</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                  <button type="button" class="btn btn-primary" onclick="pushMessage()" data-dismiss="modal">ส่ง</button>
                 </div>
               </div>
             </div>
@@ -356,7 +387,7 @@ require_once '../vendor/autoload.php';
           <a id="positionMD">ตำแหน่ง: </a>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
         </div>
       </div>
     </div>

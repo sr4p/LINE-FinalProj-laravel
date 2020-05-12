@@ -9,6 +9,12 @@ use \App\User;
 class test extends Controller
 {
     //
+
+    public function test_login()
+    {
+        return view('testlogin');
+    }
+    
     public function test_profile($id)
     {
         $profile = User::where('username', $id)->get();
@@ -17,19 +23,19 @@ class test extends Controller
 
     public function dateformat()
     {
-        $date = "04/15/2020";
-        echo date("d-m-Y", strtotime($date));
-        echo "=>", date("d/m/Y");
+        // $date = "04/15/2020";
+        // echo date("d-m-Y", strtotime($date));
+        // echo "=>", date("d/m/Y");
 
-        echo "<br>";
+        // echo "<br>";
 
-        $tt1 = "04/17/2020";
-        $ddddddd = date("Y-m-d", strtotime($tt1));
+        // $tt1 = "04/17/2020";
+        // $ddddddd = date("Y-m-d", strtotime($tt1));
 
-        $datetime1 = new DateTime();
-        $datetime2 = new DateTime($ddddddd);
-        $difference = $datetime1->diff($datetime2);
-        dd($difference);
+        // $datetime1 = new DateTime();
+        // $datetime2 = new DateTime($ddddddd);
+        // $difference = $datetime1->diff($datetime2);
+        // dd($difference);
 
         // if ($difference->invert == 1) {
         //     if($difference->days == 0){
@@ -69,31 +75,58 @@ class test extends Controller
         // echo $tt;
         // dd($datetime1->format('m-d-Y'));
 
-        $rich = Rich::whereNotnull('timeRich')->get();
-
+        // $rich = Rich::all();
+        $rich = Rich::all();
         $rich_de = json_decode($rich);
-
-        if (count($rich_de) == 0) {
-            //
-            echo 'not have';
-        } else {
-            echo 'have';
-        }
-
-        echo "<br>";
-
+        $date=[];
         foreach ($rich_de as $row) {
             foreach ($row as $key => $val) {
-                $date == $row->timeRich;
+        //         // $date[] = sizeof($row);
+                // if($row->name && $row->$key == 'status' && $row->$key == 'richId' ){
+                //     $date[] = $row->name;
+                // } 
+                // else {
+                    // $date[] = $row->richId;
+                // }
+                if($key == 'richId'){
+                    // $nonId = Rich::where('richId', $val)->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=','richmenu-4869991e67b0d8be462b2d52b35ed2c3')->get();
+                    // $gg = json_decode($nonId,true);
+                    $nonId = Rich::where('richId', $val)->where('timeRich', 'exists', false)->get();
+                    $date[] = $nonId;
+                }
+                
+        //         // $date[] = count($key);
+        //         // if($key['name'] == ''){
+        //             // $date[] = $row->name;
+        //         // }
 
+        // $date[] = count($rich_de->name);
             }
         }
 
-        echo $date;
-        echo "<br>";
-        // $date == $row->timeRich
+        
 
-        dd($rich_de);
+
+        dd($date);
+        // if (count($rich_de) == 0) {
+        //     //
+        //     echo 'not have';
+        // } else {
+        //     echo 'have';
+        // }
+
+        // echo "<br>";
+
+        
+
+        //     }
+        // }
+
+        // echo $date;
+        // echo "<br>";
+        // // $date == $row->timeRich
+
+        // dd($rich_de);
     }
 
     public function testtime()

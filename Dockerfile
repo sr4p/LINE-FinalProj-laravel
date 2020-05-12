@@ -75,17 +75,17 @@ COPY nginx.conf /etc/nginx/nginx.conf
 #supervisor
 RUN apk add --no-cache supervisor
 
-RUN apk add -f cron
+# RUN apk add -f cron
 
 
 # Add crontab file in the cron directory
-ADD scheduler/crontab /etc/cron.d/cron
+# ADD scheduler/crontab /etc/cron.d/cron
 
 # Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/cron
+# RUN chmod 0644 /etc/cron.d/cron
 
 # Create the log file to be able to run tail
-RUN touch /var/log/cron.log
+# RUN touch /var/log/cron.log
 
 EXPOSE 443 80
 

@@ -56,25 +56,15 @@
     });
   }, false);
 })();
-
-
     </script>
-    <style>
-    loginbox {width: 350px;
-              height: 500px;
-              top: 50%;
-              left: 50%;
-              position: absolute;
-              transform: translate(-50%,-50%);
-              }
-    </style>
   </head>
-<body style="background-color: #b3b3b3;text-align: center"  onload="getId()">
-<form id="frm" action='/line/registerBot' method='post' onsubmit="submit.disabled = true; return true;" class="needs-validation" style="width: 100%;height:100%;max-width: 330px;padding: 5px;margin: auto;display: block;" novalidate >
+<body style="border: 1px solid black;height: 100%;background-color: #b3b3b3;text-align: center;"  onload="getId()">
+<form id="frm" action='/line/registerBot' method='post' onsubmit="submit.disabled = true; return true;" class="needs-validation" style="border: 1px solid black;align-items: center;max-width: 330px;
+  margin: 0 auto;" novalidate >
 @csrf
-<div class="">
-<div class="card" style="width: 330px;height: 430px;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);">
-          <input type= "hidden" name="u1" id="u1">
+
+<div class="card" style="margin-top:25%;margin-bottom:25%">
+<input type= "hidden" name="u1" id="u1">
           <input type= "hidden" name="u2" id="u2">
           <input type= "hidden" name="u3" id="u3">
   <div class="card-header">
@@ -84,19 +74,18 @@
   <div class="card-body pt-4 pb-2">
 
   @if(session()->has('message'))
-  <!-- <div class=" alert alert-danger" style="color:red;text-align: center;margin-top:-15px;margin-buttom:-10px"> -->
-  <div class="" style="color:red;text-align: center;margin-top:-15px;">
+  <div class=" alert alert-danger mt-0 mb-0" style="color:red;text-align: center;">
   {{ session()->get('message') }}
-    </div>
+    </div><br>
   @endif
 
-  <div class="input-group mb-4 mt-2">
+  <div class="input-group mb-4">
     <div class="input-group-prepend">
       <div class="input-group-text"><img src="https://img.icons8.com/material-sharp/20/000000/user.png"/></div>
     </div>
-    <input type="text" class="form-control" id="uname" name="userN" placeholder="ชื่อบัญชีผู้ใช้" required>
+    <input type="text" class="form-control" id="uname" name="userN" placeholder="Username" required>
     <div class="invalid-feedback">
-          กรุณากรอกชื่อบัญชีผู้ใช้งาน
+          กรุณากรอกชื่อผู้ใช้งาน
         </div>
   </div>
 
@@ -104,18 +93,17 @@
     <div class="input-group-prepend">
       <div class="input-group-text"><img src="https://img.icons8.com/android/20/000000/key.png"/></div>
     </div>
-    <input type="password" class="form-control" placeholder="รหัสผ่าน" id="pword" name="passW" required>
+    <input type="password" class="form-control" placeholder="Password" id="pword" name="passW" required>
     <div class="invalid-feedback">
           กรุณากรอกรหัสผ่านผู้ใช้งาน
         </div>
   </div>
 
-  <a style="font-size: 12px;float:right;margin-top:5px" href="https://myid.buu.ac.th/recovery">ลืมรหัสผ่าน?</a>
+  <a style="font-size: 12px;float:right" href="https://myid.buu.ac.th/recovery">Forgot Password?</a>
   </div>
   <div class="card-footer text-muted">
-  <button class="btn btn-md btn-primary btn-block p-2" type="submit" name="submit">เข้าสู่ระบบ</button>
+  <button class="btn btn-md btn-primary btn-block p-2" type="submit" name="submit">Sign in</button>
   </div>
-</div>
 </div>
 
 </form>

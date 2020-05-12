@@ -21,6 +21,11 @@ class line_login extends Controller
     public function index(){
         return view('line_login');
     }
+
+    public function close(){
+        return view('line_login_close');
+    }
+
     public function insert($arrData,$uidline,$picline,$displayname){
         $total = User::count();
         $data = new User;
@@ -268,8 +273,6 @@ class line_login extends Controller
         $picline = $req->input('u2');
         $displayline = $req->input('u3');
 
-        
-
         $url = 'https://buu-api.buu.ac.th/api/version1/authBuu';
         $data_array =  array(
             'username' => $idStu,
@@ -352,9 +355,6 @@ class line_login extends Controller
                     $this->insert($dataStu,$userline,$picline,$displayline);
                 }
 
-                
-
-
                 $this->sendData($userline,$idStu);
                 if($foo == false){
                     //rich menu
@@ -368,17 +368,15 @@ class line_login extends Controller
                     $this->pushMsg($arrayPostData);
                 } else {
                     //
+
                 }
-            } else if(!is_numeric($idStu)) {
+            } if(!is_numeric($idStu)) {
                 $user = User::where('username',$idStu)->where('status','ไม่ได้ใช้งาน')->get();
                 if(count($user) == 1){
-                    $
                     $this->insertAgain($idStu,$dataStu,$userline,$picline,$displayline);
                 } else {
                     $this->insert($dataStu,$userline,$picline,$displayline);
                 }
-
-                // $this->insert($dataStu,$userline,$picline,$displayline);
                 $this->sendData($userline,$idStu);
                 if($foo == false){
                     //rich menu
@@ -395,14 +393,10 @@ class line_login extends Controller
                 }
             }
 
-            //close LIFF
-            echo '<script src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>';
+            echo '<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>';
+            echo '<script src="liff-starter.js"></script>';
             echo "<script type='text/javascript'>";
-            echo 'liff.init({liffId:"1653845388-2mPZP8OR"}, () => {}, err => console.error(err.code, error.message));';
-            echo "</script>";
-
-            echo "<script type='text/javascript'>";
-            echo "liff.closeWindow();";
+            echo 'liff.init({ liffId: "1653845388-2mPZP8OR" }, () => liff.closeWindow(), err => console.error(err.code, error.message));';
             echo "</script>";
     }
 }

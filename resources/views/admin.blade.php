@@ -160,12 +160,34 @@ require_once '../vendor/autoload.php';
         }
 
         function telPhone(event) {
-            if (event.target.value.length === 9 && !event.target.value.includes('-')) {
-                event.target.value = event.target.value.slice(0, 3) + '-' + event.target.value.slice(3);
+            var element = document.getElementById("tel");
+            var element2 = document.getElementById("tel2");
+            var phoneno = /^\d{10}$/;
+            if (phoneno.test(event.target.value)) {
+                element.classList.remove("border");
+                element.classList.remove("border-danger");
+                element2.classList.remove("border");
+                element2.classList.remove("border-danger");
+                flagTel = true
+                flagTel2 = true
+                return true;
+            } else {
+                element.classList.add("border");
+                element.classList.add("border-danger");
+                element2.classList.add("border");
+                element2.classList.add("border-danger");
+                flagTel = false
+                flagTel2 = false
+                return false;
             }
         }
+        var flagEmail = false;
+        var flagEmail2 = false;
+        var flagTel= false;
+        var flagTel2 = false;
 
         function addUser() {
+            event.preventDefault();
             var checkType = document.getElementById('selectRole').value
             var type = ""
             if (checkType == "admin") {
@@ -173,39 +195,81 @@ require_once '../vendor/autoload.php';
             } else {
                 type = "เจ้าหน้าที่"
             }
-            var dataSend = {
-                username: document.getElementById('username').value,
-                type: type,
-                name_thai: document.getElementById('firstName').value,
-                surname_thai: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                tel: document.getElementById('tel').value,
-                status: document.getElementById('selectStatus').value
-            }
-            if (dataSend != null) {
-                $.ajax({
-                    type: "POST",
-                    url: 'admin/create',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: dataSend,
-                    success: function(res) {
-                        if (res == 'success') {
-                            document.getElementById('username').value = ""
-                            document.getElementById('firstName').value = ""
-                            document.getElementById('lastName').value = ""
-                            document.getElementById('email').value = ""
-                            document.getElementById('tel').value = ""
-                            location.reload();
+            
+            if (flagEmail && flagTel) {
+                var dataSend = {
+                    username: document.getElementById('username').value,
+                    type: type,
+                    name_thai: document.getElementById('firstName').value,
+                    surname_thai: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    tel: document.getElementById('tel').value,
+                    status: document.getElementById('selectStatus').value
+                }
+                if (dataSend != null) {
+                    $.ajax({
+                        type: "POST",
+                        url: 'admin/create',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: dataSend,
+                        success: function(res) {
+                            if (res == 'success') {
+                                document.getElementById('username').value = ""
+                                document.getElementById('firstName').value = ""
+                                document.getElementById('lastName').value = ""
+                                document.getElementById('email').value = ""
+                                document.getElementById('tel').value = ""
+                                location.reload();
+                                return true;
+                            }
+                        },
+                        error: function(e) {
+                            console.log(e);
                         }
-                    },
-                    error: function(e) {
-                        console.log(e);
-                    }
-                });
+                    });
+                }
+            } else {
+                return false
             }
         }
+
+        function ValidateEmail(mail) {
+            var element = document.getElementById("email");
+            var element2 = document.getElementById("email2");
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail.target.value)) {
+                element.classList.remove("border");
+                element.classList.remove("border-danger");
+                element2.classList.remove("border");
+                element2.classList.remove("border-danger");
+                flagEmail = true
+                flagEmail2 = true
+            } else {
+                element.classList.add("border");
+                element.classList.add("border-danger");
+                element2.classList.add("border");
+                element2.classList.add("border-danger");
+                flagEmail = false
+                flagEmail2 = false
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var elements = document.getElementsByTagName("INPUT");
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].oninvalid = function(e) {
+                    e.target.setCustomValidity("");
+                    if (!e.target.validity.valid) {
+                        e.target.setCustomValidity("กรุณากรอกข้อมูลในช่องให้ครบถ้วน");
+                    }
+                };
+                elements[i].oninput = function(e) {
+                    e.target.setCustomValidity("");
+                };
+            }
+        })
+
         function editInfo(un) {
             $.ajax({
                 type: "POST",
@@ -261,6 +325,7 @@ require_once '../vendor/autoload.php';
             });
         }
         function editUser() {
+            event.preventDefault();
             var checkType = document.getElementById('selectRole2').value
             var type = ""
             if (checkType == "admin") {
@@ -268,36 +333,40 @@ require_once '../vendor/autoload.php';
             } else {
                 type = "เจ้าหน้าที่"
             }
-            var dataSend = {
-                username: document.getElementById('username2').value,
-                type: type,
-                name_thai: document.getElementById('firstName2').value,
-                surname_thai: document.getElementById('lastName2').value,
-                email: document.getElementById('email2').value,
-                tel: document.getElementById('tel2').value,
-                status: document.getElementById('selectStatus2').value
-            }
-            $.ajax({
-                type: "POST",
-                url: 'admin/update',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: dataSend,
-                success: function(res) {
-                    if (res == 'success') {
-                        document.getElementById('username').value = ""
-                        document.getElementById('firstName').value = ""
-                        document.getElementById('lastName').value = ""
-                        document.getElementById('email').value = ""
-                        document.getElementById('tel').value = ""
-                        location.reload();
-                    }
-                },
-                error: function(e) {
-                    console.log(e);
+            
+            if (flagEmail2 && flagTel2) {
+                var dataSend = {
+                    username: document.getElementById('username2').value,
+                    type: type,
+                    name_thai: document.getElementById('firstName2').value,
+                    surname_thai: document.getElementById('lastName2').value,
+                    email: document.getElementById('email2').value,
+                    tel: document.getElementById('tel2').value,
+                    status: document.getElementById('selectStatus2').value
                 }
-            });
+
+                $.ajax({
+                    type: "POST",
+                    url: 'admin/update',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: dataSend,
+                    success: function(res) {
+                        if (res == 'success') {
+                            document.getElementById('username').value = ""
+                            document.getElementById('firstName').value = ""
+                            document.getElementById('lastName').value = ""
+                            document.getElementById('email').value = ""
+                            document.getElementById('tel').value = ""
+                            location.reload();
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+            }
         }
 
     </script>
@@ -321,11 +390,20 @@ require_once '../vendor/autoload.php';
     </div>
   </nav>
 
+  <div class="limiter">
+    <div class="container-main">
+            <div class="wrap-login100 p-t-15 p-b-10">
+                <!-- <span class="text-form p-b-10">ข้อมูลเจ้าหน้าที่</span> -->
+                <span class="text-form" style="font-size: 21px;text-decoration: underline;">ข้อมูลเจ้าหน้าที่</span>
+            </div>
+        </div>
+  </div>
+
     <div class="container">
         <form class="form-inline">
             <div class="form-group mt-2 mb-2 ml-auto p-2" style="margin-right: 7px">
             <input class="form-control mr-sm-1 ml-auto" type="text" placeholder="ค้นหา..." id="myInput">
-                <button class="btn btn-success ml-auto" type="button" data-toggle="modal" data-target="#addAdminModel">เพิ่มเจ้าหน้าที่ <i class="fa fa-plus"></i></button>
+            <button class="btn btn-success ml-auto rounded-circle" title="เพิ่มเจ้าหน้าที่" type="button" data-toggle="modal" data-target="#addAdminModel"><i class="fa fa-plus"></i></button>    
             </div>
         </form>
         <div class="modal fade" id="addAdminModel" tabindex="-1" role="dialog" aria-labelledby="addAdminModelLabel" aria-hidden="true">
@@ -337,42 +415,47 @@ require_once '../vendor/autoload.php';
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-2 text-right" style="margin-top:5px">ประเภท</div>
-                                <select id="selectRole" class="browser-default custom-select" style="width:100px" name="role">
-                                    <option selected value="admin">แอดมิน</option>
-                                    <option value="officer">เจ้าหน้าที่</option>
-                                </select>
-                                <div class="col-md-2 text-right" style="margin-top:5px">สถานะ</div>
-                                <select id="selectStatus" class="browser-default custom-select" style="width:120px" name="status">
-                                    <option selected value="ใช้งานอยู่">ใช้งานอยู่</option>
-                                    <option value="ไม่ได้ใช้งาน">ไม่ได้ใช้งาน</option>
-                                </select>
-                            </div>
-                            <div class="row" style="margin-top:20px">
-                                <div class="col-md-2 text-right" style="margin-top:5px">ชื่อ</div>
-                                <input id="firstName" class="form-control" style="width:220px" name="first_name"></input>
-                                <div class="col-md-2 text-right" style="margin-top:5px">นามสกุล</div>
-                                <input id="lastName" class="form-control" style="width:220px" name="last_name"></input>
-                            </div>
-                            <div class="row" style="margin-top:20px">
-                                <div class="col-md-2 text-right" style="margin-top:5px">เบอร์โทรศัพท์</div>
-                                <input class="form-control" style="width:220px" name="tel" id="tel" onkeypress="telPhone(event)" maxlength="11" oninput="this.value = this.value.replace(/[^0-9./-]/g, '').replace(/(\..*)\./g, '$1');"></input>
-                                <div class="col-md-2 text-right" style="margin-top:5px">อีเมล</div>
-                                <input id="email" class="form-control" style="width:220px" name="email"></input>
-                            </div>
-                            <div class="row" style="margin-top:20px">
-                                <div class="col-md-2 text-right" style="margin-top:5px">ชื่อผู้ใช้</div>
-                                <input id="username" class="form-control" style="width:220px" name="ad_user"></input>
+                    <form onsubmit="return addUser()">
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-2 text-right" style="margin-top:5px">ประเภท</div>
+                                    <select id="selectRole" class="browser-default custom-select" style="width:100px" name="selectRole">
+                                        <option selected value="admin">แอดมิน</option>
+                                        <option value="officer">เจ้าหน้าที่</option>
+                                    </select>
+                                    <div class="col-md-2 text-right" style="margin-top:5px">สถานะ</div>
+                                    <select id="selectStatus" class="browser-default custom-select" style="width:120px" name="status">
+                                        <option selected value="ใช้งานอยู่">ใช้งานอยู่</option>
+                                        <option value="ไม่ได้ใช้งาน">ไม่ได้ใช้งาน</option>
+                                    </select>
+                                </div>
+                                <div class="row" style="margin-top:20px">
+                                    <div class="col-md-2 text-right" style="margin-top:5px">ชื่อ</div>
+                                    <input id="firstName" class="form-control" style="width:220px" name="firstName" required>
+                                    <div class="valid-feedback">
+                                    </div>
+                                    <div class="col-md-2 text-right" style="margin-top:5px">นามสกุล</div>
+                                    <input id="lastName" class="form-control" style="width:220px" name="lastName" required>
+                                </div>
+                                <div class="row" style="margin-top:20px">
+                                    <div class="col-md-2 text-right" style="margin-top:5px">เบอร์โทรศัพท์</div>
+                                    <input class="form-control" style="width:220px" name="tel" id="tel" maxlength="10" onkeyup="telPhone(event)"required>
+                                    <div class="col-md-2 text-right" style="margin-top:5px">อีเมล</div>
+                                    <input id="email" class="form-control" style="width:220px" name="email" onkeyup="ValidateEmail(event)" required>
+                                </div>
+                                <div class="row" style="margin-top:20px">
+                                    <div class="col-md-2 text-right" style="margin-top:5px">ชื่อผู้ใช้</div>
+                                    <input id="username" class="form-control" style="width:220px" name="username" required>
+                                </div>
+                                <p style="margin-left:110px; color:gray;">(ต้องเป็นชื่อผู้ใช้ของมหาวิทยาลัยบูรพาเท่านั้น)</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                        <button type="button" class="btn btn-primary" type='submit' value="addAdmin" onclick="addUser()" data-dismiss="modal">เพิ่ม</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                            <button class="btn btn-primary" type='submit'>ยืนยัน</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -397,11 +480,10 @@ require_once '../vendor/autoload.php';
                         </td>
                         <td class="text-center">{{$item->status}}</td>
                         <td class="text-center">{{$item->type}}</td>
-                        <td class="text-center">{{$item->date}}</td>
+                        <td class="text-center">{{$item->updated_at->format('d/m/Y H:i:s')}}</td>
                         <td class="text-center">
-                        <button class="btn btn-info" type="button" data-toggle="modal" data-target="#showInfoModel" onclick="showInfo('{{$item->username}}')">ดูข้อมูล <i class="fa fa-info-circle"></i></button>
-                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#editModel" onclick="editInfo('{{$item->username}}')">แก้ไข <i class="fa fa-edit"></i></button>
-                            
+                            <button class="btn btn-info rounded-circle" type="button" title="ดูข้อมูล" data-toggle="modal" data-target="#showInfoModel" onclick="showInfo('{{$item->username}}')"><i class="fa fa-info-circle"></i></button>
+                            <button class="btn btn-warning rounded-circle" type="button" title="แก้ไขข้อมูล" data-toggle="modal" data-target="#editModel" onclick="editInfo('{{$item->username}}')"><i class="fa fa-edit"></i></button>
                             <!-- <a href="/main/Admindata/change"><button class="btn btn-danger" type="button">ลบ</button></a> -->
                         </td>
                     </tr>
@@ -430,7 +512,7 @@ require_once '../vendor/autoload.php';
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
                 </div>
             </div>
         </div>
@@ -445,42 +527,45 @@ require_once '../vendor/autoload.php';
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-2 text-right" style="margin-top:5px">ประเภท</div>
-                            <select id="selectRole2" class="browser-default custom-select" style="width:100px" name="role">
-                                <option selected value="admin">แอดมิน</option>
-                                <option value="officer">เจ้าหน้าที่</option>
-                            </select>
-                            <div class="col-md-2 text-right" style="margin-top:5px">สถานะ</div>
-                            <select id="selectStatus2" class="browser-default custom-select" style="width:120px" name="status">
-                                <option selected value="ใช้งานอยู่">ใช้งานอยู่</option>
-                                <option value="ไม่ได้ใช้งาน">ไม่ได้ใช้งาน</option>
-                            </select>
-                        </div>
-                        <div class="row" style="margin-top:20px">
-                            <div class="col-md-2 text-right" style="margin-top:5px">ชื่อ</div>
-                            <input id="firstName2" class="form-control" style="width:220px" name="first_name"></input>
-                            <div class="col-md-2 text-right" style="margin-top:5px">นามสกุล</div>
-                            <input id="lastName2" class="form-control" style="width:220px" name="last_name"></input>
-                        </div>
-                        <div class="row" style="margin-top:20px">
-                            <div class="col-md-2 text-right" style="margin-top:5px">เบอร์โทรศัพท์</div>
-                            <input class="form-control" style="width:220px" name="tel" id="tel2" onkeypress="telPhone(event)" maxlength="11" oninput="this.value = this.value.replace(/[^0-9./-]/g, '').replace(/(\..*)\./g, '$1');"></input>
-                            <div class="col-md-2 text-right" style="margin-top:5px">อีเมล</div>
-                            <input id="email2" class="form-control" style="width:220px" name="email"></input>
-                        </div>
-                        <div class="row" style="margin-top:20px">
-                            <div class="col-md-2 text-right" style="margin-top:5px">ชื่อผู้ใช้</div>
-                            <input id="username2" class="form-control" style="width:220px" name="ad_user" readonly></input>
+                <form onsubmit="return editUser()">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-2 text-right" style="margin-top:5px">ประเภท</div>
+                                <select id="selectRole2" class="browser-default custom-select" style="width:100px" name="role">
+                                    <option selected value="admin">แอดมิน</option>
+                                    <option value="officer">เจ้าหน้าที่</option>
+                                </select>
+                                <div class="col-md-2 text-right" style="margin-top:5px">สถานะ</div>
+                                <select id="selectStatus2" class="browser-default custom-select" style="width:120px" name="status">
+                                    <option selected value="ใช้งานอยู่">ใช้งานอยู่</option>
+                                    <option value="ไม่ได้ใช้งาน">ไม่ได้ใช้งาน</option>
+                                </select>
+                            </div>
+                            <div class="row" style="margin-top:20px">
+                                <div class="col-md-2 text-right" style="margin-top:5px">ชื่อ</div>
+                                <input id="firstName2" class="form-control" style="width:220px" name="first_name"></input>
+                                <div class="col-md-2 text-right" style="margin-top:5px">นามสกุล</div>
+                                <input id="lastName2" class="form-control" style="width:220px" name="last_name"></input>
+                            </div>
+                            <div class="row" style="margin-top:20px">
+                                <div class="col-md-2 text-right" style="margin-top:5px">เบอร์โทรศัพท์</div>
+                                <input class="form-control" style="width:220px" name="tel" id="tel2" onkeyup="telPhone(event)" maxlength="10">
+                                <div class="col-md-2 text-right" style="margin-top:5px">อีเมล</div>
+                                <input id="email2" class="form-control" style="width:220px" name="email" onkeyup="ValidateEmail(event)"></input>
+                            </div>
+                            <div class="row" style="margin-top:20px">
+                                <div class="col-md-2 text-right" style="margin-top:5px">ชื่อผู้ใช้</div>
+                                <input id="username2" class="form-control" style="width:220px" name="ad_user" readonly></input>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-primary" type='submit' value="addAdmin" onclick="editUser()" data-dismiss="modal">แก้ไข</button>
-                </div>
+                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                        <button class="btn btn-primary" type='submit' value="addAdmin">ยืนยัน</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

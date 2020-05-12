@@ -113,19 +113,19 @@ require_once '../vendor/autoload.php';
             <div class="row row-cols-2">
             @if(Session::get('role') == "roleAdmin")
               <div class="col text-center">
-                <a href="/main/Admindata"><img src="https://i.imgur.com/Yb39ZCX.png" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
-                  <p class="text-left text-form text-center" style="margin-top:10px">จัดการเจ้าหน้าที่</p>
+              <a href="/main/Admindata"><img src="https://i.imgur.com/Yb39ZCX.png" title="จัดการเจ้าหน้าที่" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
+                <p class="text-left text-form text-center" style="margin-top:10px">จัดการเจ้าหน้าที่</p>
                 </a>
               </div>
               @else
               <div class="col text-center" style="display: none">
-                <a href="/main/Admindata"><img src="https://i.imgur.com/Yb39ZCX.png" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
-                  <p class="text-left text-form text-center" style="margin-top:10px">จัดการเจ้าหน้าที่</p>
+              <a href="/main/Admindata"><img src="https://i.imgur.com/Yb39ZCX.png" title="จัดการเจ้าหน้าที่" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
+                <p class="text-left text-form text-center" style="margin-top:10px">จัดการเจ้าหน้าที่</p>
                 </a>
               </div>
               @endif
               <div class="col text-center">
-                <a href="/main/Userdata"><img src="https://i.imgur.com/HxE3z2I.png" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
+              <a href="/main/Userdata"><img src="https://i.imgur.com/HxE3z2I.png" title="จัดการผู้ใช้ไลน์" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
                   <p class="text-left text-form text-center" style="margin-top:10px;">จัดการผู้ใช้ไลน์</p>
                 </a>
               </div>
@@ -138,7 +138,7 @@ require_once '../vendor/autoload.php';
           <h5 class="card-header" style="background-color: rgb(226, 196, 123);">จัดการริชเมนู</h5>
           <div class="card-body">
             <div class="col text-center">
-              <a href="/main/Richdata"><img src="https://i.imgur.com/OsYrKDx.png" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
+            <a href="/main/Richdata"><img src="https://i.imgur.com/OsYrKDx.png" title="รายการริชเมนู" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
                 <p class="text-left text-form text-center" style="margin-top:10px;">รายการริชเมนู</p>
               </a>
             </div>
@@ -156,7 +156,8 @@ require_once '../vendor/autoload.php';
           <h5 class="card-header" style="background-color: rgb(226, 196, 123);">ตั้งค่า LINE CHATBOT</h5>
           <div class="card-body">
             <div class="col text-center">
-              <a href="/changeConfig" data-toggle="modal" data-target="#configModel"><img src="https://i.imgur.com/QK14qN0.png" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
+            <a href="/changeConfig" title="ตั้งค่าการใช้งาน" data-toggle="modal" data-target="#configModel"><img src="https://i.imgur.com/QK14qN0.png" class="rounded-circle" style="cursor:pointer;" width="120" height="120">
+              <!-- <a href="/changeConfig" data-toggle="modal" data-target="#configModel"><img src="https://i.imgur.com/QK14qN0.png" class="rounded-circle" style="cursor:pointer;" width="120" height="120"> -->
                 <p class="text-left text-form text-center" style="margin-top:10px">ตั้งค่าการใช้งาน</p>
               </a>
             </div>
@@ -197,7 +198,7 @@ require_once '../vendor/autoload.php';
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>
               <button type="button" class="btn btn-primary" id="btn-submit" type="submit">ยืนยัน</button>
             </div>
         </form>

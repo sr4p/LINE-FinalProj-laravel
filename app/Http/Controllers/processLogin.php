@@ -38,7 +38,7 @@ class processLogin extends Controller
             $a2 = Admin::where('username', $idStu)
                 ->get();
             if (sizeof($a2) == 0) {
-                return redirect()->back()->with('message', 'ไม่มีข้อมูลในระบบ');
+                return redirect()->back()->with('message', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
             } else {
                 session(['username' => $idStu]);
                 $data = array('date' => date('Y-m-d H:i:s'));
@@ -54,11 +54,11 @@ class processLogin extends Controller
                         return redirect('/main')->with('roleAdmin', $role);
                     }
                 } else {
-                    return redirect()->back()->with('message', 'บัญชีของคุณถูกปิดการใช้งานกรุณาติดต่อเจ้าหน้าที่');
+                    return redirect()->back()->with('message', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
                 }
             }
         } else {
-            return redirect()->back()->with('message', 'กรุณาพิมพ์ชื่อผู้ใช้หรือรหัสให้ถูกต้อง');
+            return redirect()->back()->with('message', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
         }
 
 
