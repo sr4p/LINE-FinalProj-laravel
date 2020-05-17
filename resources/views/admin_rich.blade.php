@@ -19,14 +19,47 @@ require_once '../vendor/autoload.php';
   <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>ริชเมนู</title>
 </head>
 <body>
     <script type="text/javascript">
 
+document.addEventListener("DOMContentLoaded", function() {
+            var elements = document.getElementsByTagName("INPUT");
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].oninvalid = function(e) {
+                    e.target.setCustomValidity("");
+                    if (!e.target.validity.valid) {
+                            console.log(e.target)
+                        e.target.setCustomValidity("กรุณากรอกข้อมูลในช่องให้ครบถ้วน");
+                    }
+                };
+                elements[i].oninput = function(e) {
+                    e.target.setCustomValidity("");
+                    // document.getElementById("btn-submit").disabled = false;
+                };
+            }
+        })
 
+        document.addEventListener("DOMContentLoaded", function() {
+            var elements = document.getElementsByTagName("textarea");
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].oninvalid = function(e) {
+                    e.target.setCustomValidity("");
+                    if (!e.target.validity.valid) {
+                            console.log(e.target)
+                        e.target.setCustomValidity("กรุณากรอกข้อมูลในช่องให้ครบถ้วน");
+                    }
+                };
+                elements[i].oninput = function(e) {
+                    e.target.setCustomValidity("");
+                };
+            }
+        })
+
+   
 function ready() {
       var getUsername = localStorage.getItem("username");
       document.getElementById('usernameShow').innerHTML = getUsername;
@@ -41,16 +74,128 @@ function ready() {
     });
 
 
-    $("#btn-submit").click(function(e){
-        e.preventDefault();
-        var name_rich = $('input[name="name"]').val();
-        var json = $('#foo').val();
-        var file_data = $('#file').prop('files')[0];
 
-    var form_data = new FormData();
-    form_data.append('file', file_data);
-    form_data.append('name', name_rich);
-    form_data.append('json', json);
+//create rich
+var _URL = window.URL;
+$("#file").change(function(e) {
+  var file, img;
+
+  if ((file = this.files[0])) {
+    img = new Image();
+
+    img.onload = function() {
+        
+    var flagSize = false;
+    var flagType = false;
+    var flagWH = false;
+
+    var arrErr = [];
+
+    console.log("width : " + this.width + " Height :" + this.height)
+    console.log("type : " + file.type)
+    console.log("log file : " + file.size)
+
+//image/jpeg
+if (file.type == "image/jpeg" || file.type == "image/png") {
+        flagType = true;
+    } else {
+        flagType = false;
+        // alert("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
+        arrErr.push("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
+        $("#file").val('');
+
+    }
+
+//size
+    if (file.size <= 1048576) {
+        flagSize = true;
+    } else {
+        flagSize = false;
+        var sizeimg = file.size / 1024;
+        arrErr.push(`- ไฟล์นี้ขนาด(${sizeimg.toFixed(0)}KB) ใหญ่เกิน 1024KB ไม่สามารถใช้งานได้ โปรดเลือกไฟล์ใหม่!\n`);
+    }
+
+//wh
+    if((this.width == 2500 && this.height == 1686) || (this.width == 2500 && this.height == 843) || (this.width == 1200 && this.height == 810)
+        || (this.width == 1200 && this.height == 405) || (this.width == 800 && this.height == 540) || (this.width == 800 && this.height == 270)){
+            flagWH = true;
+    } else {
+            flagWH = false;
+            arrErr.push(`- ไฟล์ขนาดของรูปภาพนี้(${this.width}x${this.height}) ไม่สามารถใช้งานได้ โปรดเลือกไฟล์ใหม่!\n`);
+    }
+
+    if(flagType == true && flagSize == true && flagWH == true){
+        // alert('Finish');
+    } else {
+        if(arrErr.length == 1){
+            alert(`${arrErr[0]}`);
+        } else if(arrErr.length == 2) {
+            alert(`${arrErr[0]}${arrErr[1]}`);
+        } else {
+            alert(`${arrErr[0]}${arrErr[1]}${arrErr[2]}`);
+        }
+        
+        $("#file").val('');
+        
+    }
+
+
+    };
+    img.onerror = function() {
+        alert("อัพโหลดไฟล์รูปภาพเป็นImage file ( PNG หรือ JPEG ) เท่านั้น!");
+        $("#file").val('');
+    };
+
+    img.src = _URL.createObjectURL(file);
+  }
+});
+
+
+var jsR = document.getElementById("foo");
+jsR.onkeyup = function()
+{
+    console.log("With inValid JSON Text: "+IsValidJSONString($('#foo').val()));
+    var flag = IsValidJSONString($('#foo').val());
+    if(flag){
+        jsR.classList.remove("border");
+        jsR.classList.remove("border-danger");
+        $( '#jsf1' ).hide();
+        document.getElementById("jsonfail1").innerHTML = '';
+        flagJson = true;
+        return true;
+    } else {
+        jsR.classList.add("border");
+        jsR.classList.add("border-danger");
+        $( '#jsf1' ).show();
+        document.getElementById("jsonfail1").innerHTML = '*JSON ไม่ถูกต้อง';
+        flagJson = false;
+        return false;
+    }
+}
+
+function IsValidJSONString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+
+
+$("#ss").click(function(e){
+        event.preventDefault();
+
+        if(flagJson == true){
+            var name_rich = $('input[name="name"]').val();
+            var json = $('#foo').val();
+            var file_data = $('#file').prop('files')[0];
+
+            var form_data = new FormData();
+            form_data.append('file', file_data);
+            form_data.append('name', name_rich);
+            form_data.append('json', json);
 
         $.ajax({
             type: 'POST',
@@ -59,49 +204,9 @@ function ready() {
             contentType: false,
             processData: false,
             success: function(data) {
-
-                if(data.error.name){
-                        $( '#name-error' ).html("*"+data.error.name[0]);
-                        $('#name').css({"border-style":"solid","border-color":"red"});
-                } else {
-                        $( '#name-error' ).hide();
-                        $('#name').css({"border-style":"solid","border-color":"green"});
-                }
-
-                //pic rich
-                if(data.error.file){
-                        $( '#file1-error' ).html("*"+data.error.file[0]);
-                } else {
-                        $( '#file1-error' ).html(" ");
-                }
-
-                //json rich
-                if(data.error.json){
-                    $( '#j1' ).show();
-                    $( '#j3' ).hide();
-                    $( '#j4' ).hide();
-
-                        $( '#json1-error' ).html("*"+data.error.json[0]);
-                        $('#foo').css({"border-style":"solid","border-color":"red"});
-                        
-                } else {
-                        $( '#json1-error' ).html(" ");
-                }
-
-                if(data.error_ceateImg.img){
-                        $( '#f2' ).show();
-                        $( '#f1' ).hide();
-                        $( '#size-pic' ).html("*"+data.error_ceateImg.img[0]);
-                } else {
-                    $( '#f2' ).hide();
-                    $( '#f1' ).show();
-                    $( '#size-pic' ).html(" ");
-                }
-
-                if(data.error_ceate.js){
+                if(data.error_ceate){
                         $( '#j2' ).show();
                         $( '#j3' ).show();
-                        // $( '#j1' ).hide();
                         $( '#json2-error' ).html("*"+data.error_ceate.js[0]);
                         
                         var getData = `${data.error_detail}`;
@@ -111,26 +216,31 @@ function ready() {
                         $( '#j4' ).show();
                         $('#foo').css({"border-style":"solid","border-color":"red"});
                 } else {
-                    // $( '#j1' ).hide();
-                    $( '#j4' ).hide();
-
-                    $( '#j2' ).hide();
-                    $( '#j3' ).hide();
-                    $( '#json2-error' ).html(" ");
-                    if(!data.error_ceate.js && !data.error.json){
-                        $('#foo').css({"border-style":"solid","border-color":"green"});
-                    }
+                    
                 }
 
-                if($.isEmptyObject(data.error) && $.isEmptyObject(data.error_ceate) && $.isEmptyObject(data.error_ceateImg) ){
+                if($.isEmptyObject(data.error_ceate) && $.isEmptyObject(data.error_detail)){
                     window.location.reload();
+                    // alert(data)
                 } else {
-                    //
+                //     //
                 }
+                    // console.log("Finish")
+                    // alert("out")
+                // }
+                }
+            });
+        } else {
+            // validate("foo");
+            // var input = document.getElementById("foo");
+            // input.setCustomValidity('You gotta fill this out, yo!');
+            // alert("JSON : Failed!")
+        
 
-            }
-        });
-});
+            return false;
+        }
+    });
+
 
       $("#btn-submit-RM").click(function(e){
         e.preventDefault();
@@ -164,7 +274,66 @@ function ready() {
         });
     });
 
+
+
     });
+
+    var flagJson = false;
+    
+    function addRich(){
+        event.preventDefault();
+        if(flagJson == true){
+            var name_rich = $('input[name="name"]').val();
+            var json = $('#foo').val();
+            var file_data = $('#file').prop('files')[0];
+
+            var form_data = new FormData();
+            form_data.append('file', file_data);
+            form_data.append('name', name_rich);
+            form_data.append('json', json);
+
+            $.ajax({
+            type: 'POST',
+            headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+            url: '/createRichmenu',
+            data: form_data,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if(data.error_ceate){
+                        $( '#j2' ).show();
+                        $( '#j3' ).show();
+                        $( '#json2-error' ).html("*"+data.error_ceate.js[0]);
+                        
+                        var getData = `${data.error_detail}`;
+                        var rep = getData.split('{"message":').join('<br/> {"message":');
+                        var text = rep.replace('<br/> {"message":','{"message":');
+                        document.getElementById("logErr").innerHTML = text;
+                        $( '#j4' ).show();
+                        $('#foo').css({"border-style":"solid","border-color":"red"});
+                } else {
+                    
+                }
+
+                if($.isEmptyObject(data.error_ceate) && $.isEmptyObject(data.error_detail)){
+                    window.location.reload();
+                    // alert(data)
+                    return true;
+                } else {
+                //     //
+                }
+
+                },
+                        error: function(e) {
+                            console.log(e);
+                        }
+            });
+        } else {
+            return false
+        }
+    }
 
 var count = 0;
 $(document).on('click','#switch-success',function(e){
@@ -198,20 +367,22 @@ $(document).on('click','#switch-success2',function(e){
         }
 });
 
-
-    
-
-//   $( function() {
-    // $( "#datepicker2" ).datepicker({format: 'dd-mm-yyyy'});
-    // $( "#datepicker2" ).datepicker({ dateFormat: 'dd/mm/yy' });
-//   } );
-
-//   { dateFormat: 'dd-mm-yy' }
-
     var idrich
+    var nameDel
 
-    function removeR(id) {
+    var Cancelidrich
+    var nameCancel
+
+    function cancelR(id,name) {
+        Cancelidrich = id;
+        nameCancel = name;
+        document.getElementById("canR").innerHTML = nameCancel;
+    }
+
+    function removeR(id,name) {
         idrich = id;
+        nameDel = name;
+        document.getElementById("delR").innerHTML = nameDel;
     }
 
   function delRich(){
@@ -232,15 +403,16 @@ $(document).on('click','#switch-success2',function(e){
   }
   
 
-  function CancelRich(id){
+  function CancelRich(){
+    var dataSend = {
+          richId: Cancelidrich
+        }
     $.ajax({
         type: "POST",
         url: '/cancelRichmenu',
-        data: {
-          richId: id
-        },
+        data: dataSend,
         success: function(data) {
-            // window.location.reload();
+            window.location.reload();
         },
         error: function(data) {
           console.log('No');
@@ -289,6 +461,20 @@ $(document).on('click','#switch-success2',function(e){
     };
 
 
+    function validate(inputID) {
+  var input = document.getElementById(inputID);
+//   var validityState_object = input.validity;
+//   if(validityState_object.valueMissing) {
+     input.setCustomValidity('You gotta fill this out, yo!');
+//   } else if (input.rangeUnderflow) {
+//     input.setCustomValidity('We need a higher number!');
+//   } else if (input.rangeOverflow) {
+//     input.setCustomValidity('Thats too high!');
+//   } else {
+//     input.setCustomValidity('');
+//   }
+}
+
     </script>
 
 <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: rgb(226, 196, 123);">
@@ -314,7 +500,7 @@ $(document).on('click','#switch-success2',function(e){
     <div class="container-main">
       <div class="wrap-login100 p-t-15 p-b-10">
       <!-- <span class="text-form p-b-10 ">รายการริชเมนู</span> -->
-      <span class="text-form" style="font-size: 21px;text-decoration: underline;">รายการริชเมนู</span>
+      <span class="text-form font-weight-bold" style="font-size: 21pxext-decoration: underline;">รายการริชเมนู</span>
       </div>
     </div>
   </div>
@@ -349,17 +535,16 @@ $(document).on('click','#switch-success2',function(e){
 
     <div class="modal fade" id="addRichModel" tabindex="-1" role="dialog" aria-labelledby="addRichModel" aria-hidden="true">
 
-    <form id="frmAdd" onsubmit="createSubmit.disabled = true; return true;">@csrf
+    
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                <!-- <div class="alert alert-danger" style="display:none"></div> -->
                     <div class="modal-header">
                         <h5 class="modal-title" id="addAdminModelLabel">เพิ่มริชเมนู</h5>
                         <button type="button" class="close" onclick="resetModalAdd()" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-
+                    <form id="frmAdd" onsubmit="return addRich()">@csrf
 
 
     <div class="alert alert-info text-left mr-4 ml-4 mt-2">
@@ -374,43 +559,44 @@ $(document).on('click','#switch-success2',function(e){
                     &nbsp;&nbsp;&nbsp;&nbsp;- แนะนำ ออกแบบโดยโปรแกรม LINE Bot Designer
                     <br>
     </div>
-
-    <!-- <div class="alert alert-danger mr-4 ml-4 print-error-msg" style="display:none">
-        <ul></ul>
-    </div> -->
-
                     <div class="modal-body">
                         <div class="container-fluid">
                             <div class="row" style="">
                                 <div class="col-md-2 text-right" style="">ชื่อริชเมนู</div>
-                                <input class="form-control" style="width:250px" type="text" id="name" name="name">
-                                <!-- &nbsp;<a style="color:red" id="name-error"></a> -->
+                                <input class="form-control" style="width:250px" type="text" id="name" name="name" maxlength="20" required>
+                                <div class="valid-feedback">
+                                </div>
                             </div>
-                            <div class="row mt-2">
+                            <!-- <div class="row mt-2">
                                 <div class="col-md-2 text-right"></div>
                                 &nbsp;<a style="color:red" id="name-error"></a>
-                            </div>
+                            </div> -->
 
                             <div class="row" style="margin-top:20px">
                                 <div class="col-md-2 text-right" style="margin-top:5px;margin-bottom:5px;">รูปริชเมนู</div>
-                                <input class="form-control-file" type="file" id="file" style="width:220px;" name="file">
+                                <input class="form-control-file" type="file" id="file" style="width:250px;" name="file" required>
                             </div>
 
-                            <div class="row mb-3" id="f1">
-                                <div class="col-md-2 text-right" style=""></div>
+                            <!-- <div class="row mb-3" id="f1"> -->
+                                <!-- <div class="col-md-2 text-right" style=""></div>
                                 &nbsp;<a style="color:red" id="file1-error" class=""></a>
                             </div>
 
                             <div class="row mb-3" style="display:none" id="f2">
                                 <div class="col-md-2 text-right" style=""></div>
                                 &nbsp;<a style="color:red" id="size-pic" class=""></a>
-                            </div>
+                            </div> -->
 
-                            <div class="row">
+                            <div class="row" style="margin-top:20px">
                                 <div class="col-md-2 text-right" style="margin-top:20px">โค้ด JSON</div>
-                                <textarea class="form-control" id="foo" style="width:550px; height:200px" name="foo"></textarea>
-
+                                <textarea class="form-control" id="foo" style="width:600px; height:200px" name="foo" required></textarea>
                             </div>
+
+                            <div class="row mt-2" style="display:none" id="jsf1">
+                                <div class="col-md-2 text-right"></div>
+                                &nbsp;<a style="color:red" id="jsonfail1"></a>
+                            </div>
+
 
                             <div class="row mt-2" style="display:none" id="j1">
                                 <div class="col-md-2 text-right"></div>
@@ -440,11 +626,12 @@ $(document).on('click','#switch-success2',function(e){
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" onclick="resetModalAdd()" data-dismiss="modal">ปิด</button>
-                        <button type="button" class="btn btn-primary" id="btn-submit" type="submit" name="createSubmit">เพิ่ม</button>
+                        <button class="btn btn-primary" type="submit" id="btn-submit">เพิ่ม</button>
                     </div>
+                    </form>
                 </div>
             </div>
-    </form>
+    
     </div>
 
         <div class="modal fade" id="useRichModel"  tabindex="-1" role="dialog" aria-labelledby="useRichModel" data-toggle="modal" aria-hidden="true" >
@@ -452,7 +639,6 @@ $(document).on('click','#switch-success2',function(e){
     <form id="frmUse">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                <!-- <div class="alert alert-danger alert-danger-dt" style="display:none"></div> -->
                     <div class="modal-header">
                         <h4 class="modal-title" id="useRichModelLabel">ตั้งค่าใช้งานริชเมนู</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -592,7 +778,7 @@ $(document).on('click','#switch-success2',function(e){
                   </button>
                 </div>
                 <div class="modal-body">
-                  <a>คุณต้องการยืนยันที่จะลบริชเมนูนี้ใช่หรือไม่</a>
+                  <a>คุณต้องการยืนยันที่จะลบริชเมนูชื่อ <a id='delR'></a> ใช่หรือไม่</a>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
@@ -600,7 +786,27 @@ $(document).on('click','#switch-success2',function(e){
                 </div>
               </div>
             </div>
-          </div>
+        </div>
+
+        <div class="modal fade" id="CancelStModal" tabindex="-1" role="dialog" aria-labelledby="CancelStModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+              <div class="modal-header" style="background-color: rgb(226, 196, 123);">
+                  <h5 class="modal-title" id="messageModelLabel">ยืนยันการยกเลิกการกำหนดเวลาใช้งานริชเมนู</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <a>คุณต้องการยืนยันที่จะยกเลิกการกำหนดเวลาใช้งานริชเมนู <a id='canR'></a> ใช่หรือไม่</a>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
+                  <button type="button" class="btn btn-primary" onclick="CancelRich()" data-dismiss="modal">ยืนยัน</button>
+                </div>
+              </div>
+            </div>
+        </div>
 
 <div class="container-fluid">
             <table class="table table-bordered" id="">
@@ -633,11 +839,11 @@ $(document).on('click','#switch-success2',function(e){
                         <td class="text-center">
                         <input type="hidden" name="id-rich" id="id-rich" value="{{$item->richId}}">
                         @if($item->status == 'ยังไม่ได้ใช้งาน')
-                            <button class="btn btn-danger rounded-circle" title="ลบ" id='delete-rich' type="button" data-toggle="modal" data-target="#removeStModal" onclick="removeR('{{$item->richId}}')"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-danger rounded-circle" title="ลบ" id='delete-rich' type="button" data-toggle="modal" data-target="#removeStModal" onclick="removeR('{{$item->richId}}','{{$item->name}}')"><i class="fa fa-trash"></i></button>
                         @elseif($item->status == 'นิสิต' || $item->status == 'บุคลากร' || $item->status == 'เมนูเริ่มต้น')
-                            <button class="btn btn-dark rounded-circle" title="ลบ" id='delete-rich' type="button" data-toggle="modal" data-target="#removeStModal" onclick="removeR('{{$item->richId}}')" disabled><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-dark rounded-circle" title="ลบ" id='delete-rich' type="button" data-toggle="modal" data-target="#removeStModal" onclick="removeR('{{$item->richId}}','{{$item->name}}')" disabled><i class="fa fa-trash"></i></button>
                         @else
-                            <button class="btn btn-warning rounded-circle" title="ยกเลิก" id='cancel-rich' type="submit" onclick="CancelRich('{{$item->richId}}')"><i class="fa fa-ban"></i></button>
+                            <button class="btn btn-warning rounded-circle" title="ยกเลิก" id='cancel-rich' type="button" data-toggle="modal" data-target="#CancelStModal" onclick="cancelR('{{$item->richId}}','{{$item->name}}')"><i class="fa fa-ban"></i></button>
                         @endif
 
                         </td>

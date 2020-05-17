@@ -72,6 +72,8 @@ Route::post('/cancelRichmenu','admin_create_rich@CancelTimeRich'); // cancel
 
 Route::delete('/delRichmenu','admin_create_rich@DeleteRich'); //delete
 
+Route::post('/delNotification','admin_create_rich@DeleteNotification'); //del noti
+
 
 //lineBot
 Route::get('/line/login','line_login@index');

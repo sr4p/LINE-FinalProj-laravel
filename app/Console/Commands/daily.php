@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use \App\ConfigAT;
 use \App\Rich;
 use \App\User;
+use \App\Notification;
 
 class daily extends Command
 {
@@ -64,6 +65,9 @@ class daily extends Command
         $userStudent = array();
         $userPersonnal = array();
 
+        $richStu = false;
+        $richPer = false;
+
         $user = User::where('status', 'ใช้งานอยู่')->get();
         $user1 = json_decode($user);
 
@@ -97,11 +101,34 @@ class daily extends Command
                                 $this->changeRichStu($arrayUser, $valRich);
                                 $this->updateStatus("นิสิต", $valRich);
                                 $this->updateStu($valRich);
+
+                                
+                                //notify
+                                $check_config = ConfigAT::where('_id', 1)->get();
+                                $stuR = $check_config[0]['richmenu_student'];
+                                if($stuR == $valRich){
+                                    $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
+                                    $richStu = true;
+                                } else {
+                                    $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                }
+
                             } else if ($row->timeType == 'บุคลากร') {
                                 $this->DisableRich('ยังไม่ได้ใช้งาน', $personnal);
                                 $this->changeRichPer($arrayPersonnal, $valRich);
                                 $this->updateStatus("บุคลากร", $valRich);
                                 $this->updatePer($valRich);
+
+                                //notify
+                                $check_config = ConfigAT::where('_id', 1)->get();
+                                $perR = $check_config[0]['richmenu_personnal'];
+                                if($perR == $valRich){
+                                    $this->insertNotify('success',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
+                                    $richPer = true;
+                                } else {
+                                    $this->insertNotify('fail',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                }
+
                             }
                         } else {
                             //
@@ -177,7 +204,7 @@ class daily extends Command
 
     public function updateStatus($name, $id)
     {
-        $get = array('status' => $name, 'timeRich' => '', 'timeType' => '');
+        $get = array('status' => $name, 'timeRich' => '-', 'timeType' => '-');
         $up = Rich::where('richId', $id);
         $up->update($get, ['upsert' => true]);
     }
@@ -477,5 +504,14 @@ class daily extends Command
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $result = curl_exec($ch);
         curl_close($ch);
+    }
+
+    public function insertNotify($status,$detail)
+    {
+        $data = new Notification;
+        $data->detail = $detail;
+        $data->status = $status;
+        $data->save();
+        return "Success";
     }
 }

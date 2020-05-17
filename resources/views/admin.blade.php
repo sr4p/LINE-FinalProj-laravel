@@ -394,7 +394,7 @@ require_once '../vendor/autoload.php';
     <div class="container-main">
             <div class="wrap-login100 p-t-15 p-b-10">
                 <!-- <span class="text-form p-b-10">ข้อมูลเจ้าหน้าที่</span> -->
-                <span class="text-form" style="font-size: 21px;text-decoration: underline;">ข้อมูลเจ้าหน้าที่</span>
+                <span class="text-form font-weight-bold" style="font-size: 21px;">ข้อมูลเจ้าหน้าที่</span>
             </div>
         </div>
   </div>
@@ -434,6 +434,7 @@ require_once '../vendor/autoload.php';
                                     <div class="col-md-2 text-right" style="margin-top:5px">ชื่อ</div>
                                     <input id="firstName" class="form-control" style="width:220px" name="firstName" required>
                                     <div class="valid-feedback">
+                                        
                                     </div>
                                     <div class="col-md-2 text-right" style="margin-top:5px">นามสกุล</div>
                                     <input id="lastName" class="form-control" style="width:220px" name="lastName" required>

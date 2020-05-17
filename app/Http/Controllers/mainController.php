@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Config;
 use Illuminate\Http\Request;
 use \App\ConfigAT;
+use \App\Notification;
 
 class mainController extends Controller
 {
@@ -35,6 +36,7 @@ class mainController extends Controller
 
     public function showUser(Request $req)
     {
+        $notify = Notification::all();
         $countId = ConfigAT::count();
         $tal = $countId + 1;
 
@@ -53,7 +55,7 @@ class mainController extends Controller
         $usname = session("username");
         if ($usname) {
             // return view('main', compact('username','at','cs'));
-            return view('main', ['username' => $username, 'at' => $at, 'cs' => $cs]);
+            return view('main', ['username' => $username, 'at' => $at, 'cs' => $cs,'notify' => $notify]);
         } else {
             return redirect('/');
         }

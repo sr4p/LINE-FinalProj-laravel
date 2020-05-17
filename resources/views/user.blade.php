@@ -273,7 +273,7 @@ require_once '../vendor/autoload.php';
     <div class="container-main">
       <div class="wrap-login100 p-t-15 p-b-10">
       <!-- <span class="text-form p-b-10 ">ข้อมูลผู้ใช้ไลน์</span> -->
-      <span class="text-form" style="font-size: 21px;text-decoration: underline;">ข้อมูลผู้ใช้ไลน์</span>
+      <span class="text-form font-weight-bold" style="font-size: 21px;">ข้อมูลผู้ใช้ไลน์</span>
       </div>
     </div>
   </div>

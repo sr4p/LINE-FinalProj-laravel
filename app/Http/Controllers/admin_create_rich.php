@@ -12,6 +12,7 @@ use Validator;
 use \App\ConfigAT;
 use \App\Rich;
 use \App\User;
+use \App\Notification;
 
 class admin_create_rich extends Controller
 {
@@ -37,20 +38,6 @@ class admin_create_rich extends Controller
 
     public function CreateRichmenu(Request $req)
     {
-        $validator = Validator::make($req->all(), [
-            'name' => 'required|max:20',
-            'file' => 'required|mimes:png,jpeg|max:1024',
-            'json' => 'required|json',
-        ],
-            [
-                'name.required' => 'ตั้งชื่อริชเมนู',
-                'name.max' => 'ตั้งชื่อริชเมนูไม่เกิน 20 ตัวอักษร',
-                'file.required' => 'อัพโหลดรูป',
-                'file.mimes' => 'อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG',
-                'file.max' => 'อัพโหลดไฟล์รูปภาพที่มีขนาดไม่เกิน 1 MB',
-                'json.required' => 'ใส่โค้ด JSON',
-                'json.json' => 'ใส่โค้ด JSON ให้ถูกต้อง',
-            ]);
 
         $countId = ConfigAT::count();
         $richAll = ConfigAT::where('_id', $countId)->get();
@@ -62,8 +49,6 @@ class admin_create_rich extends Controller
         $err_json = [];
         $err_img = [];
         $err_json_detail = [];
-
-        if ($validator->passes()) {
 
             $json = $req->input('json');
             $file = $req->file('file');
@@ -83,19 +68,6 @@ class admin_create_rich extends Controller
             // $err_json = [];
             // $err_img = [];
 
-        if (($width == 2500 && $height == 1686) 
-        || ($width == 2500 && $height == 843) 
-        || ($width == 1200 && $height == 810) 
-        || ($width == 1200 && $height == 405)
-        || ($width == 800 && $height == 540)
-        || ($width == 800 && $height == 270)) {
-            
-        } else {
-            File::delete('images/' . $filename);
-            $err_img = ['img' => ["ขนาดของรูปนี้($width x $height) ไม่สามารถใช้งานได้ โปรดเลือกไฟล์รูปใหม่"]];
-            return response()->json(['error' => $validator->errors(),'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
-            //
-        }
 
             // finish ---create Rich
             $ch = curl_init();
@@ -125,7 +97,7 @@ class admin_create_rich extends Controller
                 File::delete('images/' . $filename);
                 $err_json_detail = $result;
                 $err_json = ['js' => ['โค้ด JSON สำหรับสร้างริชเมนู ไม่ถูกต้อง']];
-                return response()->json(['error' => $validator->errors(), 'error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
+                return response()->json(['error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
             } else {
                 //finish ---upload img Rich
                 $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient("$this->access_token");
@@ -140,20 +112,20 @@ class admin_create_rich extends Controller
                     $this->RemoveRich($richid);
                     File::delete('images/' . $filename);
                     $err_img = ['img' => ['ไฟล์รูปไม่สามารถใช้งานได้ โปรดเลือกไฟล์รูปใหม่']];
-                    return response()->json(['error' => $validator->errors(), 'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
+                    return response()->json(['error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
                 } else {
 
                     $this->insertRich($richid, $name);
 
                     File::delete('images/' . $filename);
 
+                    // response()->json(['error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
                     redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย');
                 }
             }
-        }
-
-        return response()->json(['error' => $validator->errors(),'error_ceateImg' => $err_img,'error_ceate' => $err_json]);
         
+            // response()->json(['error_ceateImg' => $err_img,'error_ceate' => $err_json,'error_detail' => $err_json_detail]);
+                // return redirect('/main/Richdata')->withSuccess('เพิ่มริชเมนูเรียบร้อย'); 
     }
 
     public function insertRich($richid, $nameRich)
@@ -304,12 +276,12 @@ class admin_create_rich extends Controller
                         if ($key == "richId") {
                                 $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
                                 $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
-                                $nonId->update($nonStatus, ['upsert' => true]);
+                                $nonId->update($nonStatus, ['upsert' => false]);
                         } 
                     }
                 }
 
-                Rich::where('name', 'exists', false)->delete();
+                // Rich::where('name', 'exists', false)->delete();
                 // Rich::whereNull('richId', $id)->delete();
 
 
@@ -356,7 +328,7 @@ class admin_create_rich extends Controller
                     if ($key == "richId") {
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
                         $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
-                        $nonId->update($nonStatus, ['upsert' => true]);
+                        $nonId->update($nonStatus, ['upsert' => false]);
                     }
                 }
             }
@@ -364,7 +336,7 @@ class admin_create_rich extends Controller
             $nonStatusPer = array('status' => 'บุคลากร');
             $perId = $check_rich[0]['richmenu_personnal'];
             $nonIdPer = Rich::where('richId', $perId);
-            $nonIdPer->update($nonStatus, ['upsert' => true]);
+            $nonIdPer->update($nonStatus, ['upsert' => false]);
 
             $this->update();
 
@@ -406,9 +378,11 @@ class admin_create_rich extends Controller
             foreach ($non1 as $row) {
                 foreach ($row as $key => $val) {
                     if ($key == "richId") {
+                        
+
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
                         $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
-                        $nonId->update($nonStatus, ['upsert' => true]);
+                        $nonId->update($nonStatus, ['upsert' => false]);
                     }
                 }
             }
@@ -416,7 +390,7 @@ class admin_create_rich extends Controller
             $nonStatusStu = array('status' => 'นิสิต');
             $stuId = $check_rich[0]['richmenu_student'];
             $nonIdStu = Rich::where('richId', $stuId);
-            $nonIdStu->update($nonStatusStu, ['upsert' => true]);
+            $nonIdStu->update($nonStatusStu, ['upsert' => false]);
 
             $this->update();
         } else if (!empty($time1) && !empty($time2)) {
@@ -452,7 +426,7 @@ class admin_create_rich extends Controller
                     if ($key == "richId") {
                         $nonStatus = array('status' => 'ยังไม่ได้ใช้งาน');
                         $nonId = Rich::where('richId', $val)->where('status','!=','กำหนดเวลาใช้งาน');
-                        $nonId->update($nonStatus, ['upsert' => true]);
+                        $nonId->update($nonStatus, ['upsert' => false]);
                     }
                 }
             }
@@ -460,17 +434,17 @@ class admin_create_rich extends Controller
             $nonStatusStu = array('status' => 'นิสิต');
             $stuId = $check_rich[0]['richmenu_student'];
             $nonIdStu = Rich::where('richId', $stuId);
-            $nonIdStu->update($nonStatusStu, ['upsert' => true]);
+            $nonIdStu->update($nonStatusStu, ['upsert' => false]);
 
             $nonStatusPer = array('status' => 'บุคลากร');
             $perId = $check_rich[0]['richmenu_personnal'];
             $nonIdPer = Rich::where('richId', $perId);
-            $nonIdPer->update($nonStatusPer, ['upsert' => true]);
+            $nonIdPer->update($nonStatusPer, ['upsert' => false]);
 
             $this->update();
 
         }
-        Rich::whereNull('richId')->delete();
+        // Rich::whereNull('richId')->delete();
 
         redirect('/main/Richdata')->withSuccess('ใช้งานริชเมนูเรียบร้อย');
        
@@ -480,21 +454,21 @@ class admin_create_rich extends Controller
     {
         $get = array('richmenu_login' => $this->Rich_Login, 'richmenu_student' => $this->Rich_Stu, 'richmenu_personnal' => $this->Rich_Personnal);
         $up = ConfigAT::where('_id', 1);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function updateStatus($name, $id)
     {
         $get = array('status' => $name);
         $up = Rich::where('richId', $id);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function setTimeRich($date, $type, $id)
     {
         $get = array('timeRich' => $date, 'timeType' => $type);
         $up = Rich::where('richId', $id);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function pushMsg($arrayPostData)
@@ -722,9 +696,9 @@ class admin_create_rich extends Controller
 
     public function updateStatusAfterCancel($id)
     {
-        $get = array('status' => 'ยังไม่ได้ใช้งาน', 'timeRich' => '', 'timeType' => '');
+        $get = array('status' => 'ยังไม่ได้ใช้งาน', 'timeRich' => '-', 'timeType' => '-');
         $up = Rich::where('richId', $id);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function checkImg($width, $height,$filename)
@@ -767,5 +741,11 @@ class admin_create_rich extends Controller
         } else {
             //
         }
+    }
+
+    public function DeleteNotification(Request $req)
+    {
+        return Notification::whereNotNull('status')->delete();
+        // redirect()->back();
     }
 }

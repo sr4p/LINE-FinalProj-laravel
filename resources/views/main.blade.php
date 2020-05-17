@@ -9,11 +9,16 @@ require_once '../vendor/autoload.php';
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{asset('css/main.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('css/util.css')}}">
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
 
   <title>หน้าหลัก</title>
 
@@ -65,6 +70,27 @@ require_once '../vendor/autoload.php';
             }
         });
 });
+
+$("#delNotification").click(function(e){
+        e.preventDefault();
+// alert("del")
+
+        $.ajax({
+            type: 'POST',
+            data: {
+              "_token": "{{ csrf_token() }}"
+            },
+            url: '/delNotification',
+            success: function(data) {
+                window.location.reload();
+            },
+        error: function(data) {
+          console.log('No');
+        }
+        });
+});
+
+
     });
   </script>
 </head>
@@ -91,7 +117,7 @@ require_once '../vendor/autoload.php';
   <div class="limiter">
     <div class="container-main">
       <div class="wrap-login100 p-t-20 p-b-10">
-        <span class="text-form p-b-30 " style="font-size: 21px;text-decoration: underline;">ระบบสารสนเทศเพื่อจัดการ LINE CHATBOT</span>
+        <span class="text-form p-b-30 font-weight-bold" style="font-size: 21px;">ระบบสารสนเทศเพื่อจัดการ LINE CHATBOT</span>
         <span>
         @if(Session::has('success'))
     <div class="alert alert-success" style="width:auto;text-align: center;">
@@ -135,7 +161,36 @@ require_once '../vendor/autoload.php';
       </div>
       <div class="col">
         <div class="card">
-          <h5 class="card-header" style="background-color: rgb(226, 196, 123);">จัดการริชเมนู</h5>
+          <div class="card-header" style="background-color: rgb(226, 196, 123);">
+          <div class="dropdown ">
+          <span style="font-size: 1.25rem;font-weight: 500;line-height: 1.2;">จัดการริชเมนู</span>
+          
+          <button type="button" class="btn btn-primary p-0 pl-1 pr-1 " id="dropdownNotify" style="float:right;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"></i> แจ้งเตือน @if(count($notify) == 0) @else<span class="badge badge-danger">{{count($notify)}}</span>@endif
+          </button>
+
+    @if(count($notify) == 0)
+          <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
+            <p class="dropdown-item text-center">ไม่มีการแจ้งเตือน</p>
+          </div>
+    @else
+          <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
+          @foreach($notify as $item)
+            @if($item->status == 'success')
+              <a class="dropdown-item alert-success mb-1" href="/main/Richdata">{{$item->detail}}</a>
+            @else
+              <a class="dropdown-item alert-danger mb-1" href="/main/Richdata">{{$item->detail}}</a>
+            @endif
+          @endforeach
+            <a class="dropdown-item text-center" id="delNotification" href="#">ลบการแจ้งเตือนทั้งหมด</a>
+          </div>
+
+    @endif
+          
+         </div>
+          
+          
+          </div>
+          
           <div class="card-body">
             <div class="col text-center">
             <a href="/main/Richdata"><img src="https://i.imgur.com/OsYrKDx.png" title="รายการริชเมนู" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
