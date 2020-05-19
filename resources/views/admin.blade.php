@@ -454,7 +454,7 @@ require_once '../vendor/autoload.php';
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">ปิด</button>
-                            <button class="btn btn-primary" type='submit'>ยืนยัน</button>
+                            <button class="btn btn-primary" type='submit'>เพิ่ม</button>
                         </div>
                     </form>
                 </div>
@@ -523,7 +523,7 @@ require_once '../vendor/autoload.php';
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="background-color: rgb(226, 196, 123);">
-                    <h5 class="modal-title" id="exampleModalLongTitle">แก้ไข</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">แก้ไขข้อมูล</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

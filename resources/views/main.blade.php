@@ -165,8 +165,11 @@ $("#delNotification").click(function(e){
           <div class="dropdown ">
           <span style="font-size: 1.25rem;font-weight: 500;line-height: 1.2;">จัดการริชเมนู</span>
           
-          <button type="button" class="btn btn-primary p-0 pl-1 pr-1 " id="dropdownNotify" style="float:right;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"></i> แจ้งเตือน @if(count($notify) == 0) @else<span class="badge badge-danger">{{count($notify)}}</span>@endif
-          </button>
+          @if(count($notify) == 0)
+          <button type="button" class="btn btn-secondary p-0 pl-1 pr-1 " id="dropdownNotify" style="float:right;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"></i>แจ้งเตือน</button>
+          @else
+          <button type="button" class="btn btn-primary p-0 pl-1 pr-1 " id="dropdownNotify" style="float:right;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"></i> แจ้งเตือน <span class="badge badge-danger">{{count($notify)}}</span></button>
+          @endif
 
     @if(count($notify) == 0)
           <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
@@ -176,9 +179,13 @@ $("#delNotification").click(function(e){
           <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
           @foreach($notify as $item)
             @if($item->status == 'success')
-              <a class="dropdown-item alert-success mb-1" href="/main/Richdata">{{$item->detail}}</a>
+              <a class="dropdown-item alert-success mb-1" href="/main/Richdata">{{$item->detail}}<br>
+              <p>{{$item->created_at->format('d/m/Y เวลา: H:i:s')}}</p>
+              </a>
             @else
-              <a class="dropdown-item alert-danger mb-1" href="/main/Richdata">{{$item->detail}}</a>
+              <a class="dropdown-item alert-danger mb-1" href="/main/Richdata">{{$item->detail}}<br>
+              <p>{{$item->created_at->format('d/m/Y เวลา: H:i:s')}}</p>
+              </a>
             @endif
           @endforeach
             <a class="dropdown-item text-center" id="delNotification" href="#">ลบการแจ้งเตือนทั้งหมด</a>

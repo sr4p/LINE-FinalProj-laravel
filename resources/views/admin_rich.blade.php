@@ -475,6 +475,50 @@ $(document).on('click','#switch-success2',function(e){
 //   }
 }
 
+function sortTableSt() {
+            var n = 0;
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("myTable");
+            switching = true;
+            dir = "asc";
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 0; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            $("#sortBtn1").attr('class', 'fa fa-sort-up');
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            $("#sortBtn1").attr('class', 'fa fa-sort-down');
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        $(document).ready(function(){
+  $('#tableSort').trigger('click');
+});
+
     </script>
 
 <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: rgb(226, 196, 123);">
@@ -500,7 +544,7 @@ $(document).on('click','#switch-success2',function(e){
     <div class="container-main">
       <div class="wrap-login100 p-t-15 p-b-10">
       <!-- <span class="text-form p-b-10 ">รายการริชเมนู</span> -->
-      <span class="text-form font-weight-bold" style="font-size: 21pxext-decoration: underline;">รายการริชเมนู</span>
+      <span class="text-form font-weight-bold" style="font-size: 21px;">รายการริชเมนู</span>
       </div>
     </div>
   </div>
@@ -808,12 +852,12 @@ $(document).on('click','#switch-success2',function(e){
             </div>
         </div>
 
-<div class="container-fluid">
+<div class="container-fluid" >
             <table class="table table-bordered" id="">
                 <thead>
                     <tr style="background-color: rgb(226, 196, 123);">
                         <th scope="col" class="text-center" style="width:34%">ชื่อริชเมนู</th>
-                        <th scope="col" class="text-center" style="width:33%">การใช้งาน</th>
+                        <th onclick="sortTableSt()" id="tableSort" scope="col" class="text-center" style="width:33%;cursor:pointer;">การใช้งาน <i id="sortBtn1" class="fa fa-sort-down"></th>
                         <th scope="col" class="text-center" style="width:33%">เครื่องมือ</th>
                     </tr>
                 </thead>

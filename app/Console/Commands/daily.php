@@ -111,6 +111,7 @@ class daily extends Command
                                     $richStu = true;
                                 } else {
                                     $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                    $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
 
                             } else if ($row->timeType == 'บุคลากร') {
@@ -127,6 +128,7 @@ class daily extends Command
                                     $richPer = true;
                                 } else {
                                     $this->insertNotify('fail',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                    $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
 
                             }
@@ -206,21 +208,21 @@ class daily extends Command
     {
         $get = array('status' => $name, 'timeRich' => '-', 'timeType' => '-');
         $up = Rich::where('richId', $id);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function updateStu($Stu)
     {
         $get = array('richmenu_student' => $Stu);
         $up = ConfigAT::where('_id', 1);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function updatePer($Per)
     {
         $get = array('richmenu_personnal' => $Per);
         $up = ConfigAT::where('_id', 1);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function Out_rich($uid)
