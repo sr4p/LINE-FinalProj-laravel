@@ -853,7 +853,7 @@ function sortTableSt() {
         </div>
 
 <div class="container-fluid" >
-            <table class="table table-bordered" id="">
+            <table class="table table-borderless table-hover" id="">
                 <thead>
                     <tr style="background-color: rgb(226, 196, 123);">
                         <th scope="col" class="text-center" style="width:34%">ชื่อริชเมนู</th>

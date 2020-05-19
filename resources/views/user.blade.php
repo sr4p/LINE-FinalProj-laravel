@@ -286,7 +286,7 @@ require_once '../vendor/autoload.php';
     </form>
 
     <div class="container-fluid">
-    <table class="table table-bordered">
+    <table class="table table-borderless table-hover">
         <thead>
           <tr style="background-color: rgb(226, 196, 123);">
             <th onclick="sortTableUname(0)" scope="col" class="text-center" style="width:100px; cursor:pointer;">ชื่อผู้ใช้ <i id="sortBtn1" class="fa fa-sort-down"></i></th>
@@ -298,7 +298,7 @@ require_once '../vendor/autoload.php';
             <th scope="col" class="text-center" style="width:250px;">เครื่องมือ</th>
           </tr>
         </thead>
-        <tbody id="myTable">
+        <tbody id="myTable" >
           @foreach($a2 as $item)
           <tr>
             <td class="text-center">{{$item->username}}</td>
