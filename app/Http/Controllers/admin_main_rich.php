@@ -58,6 +58,7 @@ class admin_main_rich extends Controller
             $all = ['richL', 'richS', 'richP', 'rich'];
             return view('admin_rich', compact($all));
         } else if($countId != 0) {
+            // $rich = Rich::paginate(4);
             $rich = Rich::all();
             $richDisable = Rich::where('status','ยังไม่ได้ใช้งาน')->get();
             $richL = null;

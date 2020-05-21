@@ -201,7 +201,7 @@ class daily extends Command
     {
         $get = array('status' => $name, 'timeRich' => '', 'timeType' => '');
         $up = Rich::where('richId', $id);
-        $up->update($get, ['upsert' => true]);
+        $up->update($get, ['upsert' => false]);
     }
 
     public function updateStatus($name, $id)

@@ -286,7 +286,7 @@ require_once '../vendor/autoload.php';
     </form>
 
     <div class="container-fluid">
-    <table class="table table-borderless table-hover">
+    <table class="table table-borderless table-hover border pl-0 pr-0">
         <thead>
           <tr style="background-color: rgb(226, 196, 123);">
             <th onclick="sortTableUname(0)" scope="col" class="text-center" style="width:100px; cursor:pointer;">ชื่อผู้ใช้ <i id="sortBtn1" class="fa fa-sort-down"></i></th>
@@ -364,6 +364,12 @@ require_once '../vendor/autoload.php';
           @endforeach
         </tbody>
       </table>
+
+      <!-- <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center mt-3">
+  
+  </ul>
+</nav> -->
     </div>
   </div>
 
