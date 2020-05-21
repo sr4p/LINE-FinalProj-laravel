@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Login</title>
+    <title>LINEBOT LOGIN PAGE</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="{{asset('css/main.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{asset('css/util.css')}}">
    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>
     <script src="{{ asset('js/liff-starter.js')}}"></script>
     <script src="{{asset('js/liff-starter.js')}}"></script>

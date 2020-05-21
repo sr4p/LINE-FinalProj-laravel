@@ -57,7 +57,8 @@ class daily extends Command
         $student = $check_rich[0]['richmenu_student'];
         $personnal = $check_rich[0]['richmenu_personnal'];
 
-        $rich = Rich::whereNotnull('timeRich')->get();
+        // $rich = Rich::whereNotnull('timeRich')->get();
+        $rich = Rich::where('timeRich','!=','-')->get();
         $date = date("d/m/Y");
 
         $rich_de = json_decode($rich);
@@ -76,6 +77,7 @@ class daily extends Command
         if (count($rich_de) == 0) {
             //
         } else {
+            $co = count($rich_de);
             foreach ($rich_de as $row) {
                 foreach ($row as $key => $valRich) {
                     if ($key == "richId") {
@@ -132,6 +134,8 @@ class daily extends Command
                                 }
 
                             }
+                        } if($date < $row->timeRich) {
+                            $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                         } else {
                             //
                         }

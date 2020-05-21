@@ -23,6 +23,17 @@ class test extends Controller
 
     public function dateformat()
     {
+        echo "GG<br>";
+        $date = "20/05/2020";
+        $today =  date("d/m/Y");
+
+    if($today > $date) {
+        echo "$date was in past";
+    } else if ($today == $date) {
+        echo "It's now";
+    } else {
+        echo "$date is in future";
+    }
         // $date = "04/15/2020";
         // echo date("d-m-Y", strtotime($date));
         // echo "=>", date("d/m/Y");
@@ -76,11 +87,11 @@ class test extends Controller
         // dd($datetime1->format('m-d-Y'));
 
         // $rich = Rich::all();
-        $rich = Rich::all();
-        $rich_de = json_decode($rich);
-        $date=[];
-        foreach ($rich_de as $row) {
-            foreach ($row as $key => $val) {
+        // $rich = Rich::all();
+        // $rich_de = json_decode($rich);
+        // $date=[];
+        // foreach ($rich_de as $row) {
+        //     foreach ($row as $key => $val) {
         //         // $date[] = sizeof($row);
                 // if($row->name && $row->$key == 'status' && $row->$key == 'richId' ){
                 //     $date[] = $row->name;
@@ -88,12 +99,12 @@ class test extends Controller
                 // else {
                     // $date[] = $row->richId;
                 // }
-                if($key == 'richId'){
-                    // $nonId = Rich::where('richId', $val)->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=','richmenu-4869991e67b0d8be462b2d52b35ed2c3')->get();
-                    // $gg = json_decode($nonId,true);
-                    $nonId = Rich::where('richId', $val)->where('timeRich', 'exists', false)->get();
-                    $date[] = $nonId;
-                }
+                // if($key == 'richId'){
+                //     // $nonId = Rich::where('richId', $val)->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=', 'richmenu-4869991e67b0d8be462b2d52b35ed2c3')->where('richId', '!=','richmenu-4869991e67b0d8be462b2d52b35ed2c3')->get();
+                //     // $gg = json_decode($nonId,true);
+                //     $nonId = Rich::where('richId', $val)->where('timeRich', 'exists', false)->get();
+                //     $date[] = $nonId;
+                // }
                 
         //         // $date[] = count($key);
         //         // if($key['name'] == ''){
@@ -101,13 +112,13 @@ class test extends Controller
         //         // }
 
         // $date[] = count($rich_de->name);
-            }
-        }
+            // }
+        // }
 
         
 
 
-        dd($date);
+        // dd($date);
         // if (count($rich_de) == 0) {
         //     //
         //     echo 'not have';
