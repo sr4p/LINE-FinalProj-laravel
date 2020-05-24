@@ -409,6 +409,7 @@ class admin_create_rich extends Controller
             $this->setTimeRich($strFormat1, 'นิสิต', $student);
             $name_rs = "กำหนดเวลาใช้งาน";
             $this->updateStatus($name_rs, $student);
+            // $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
 
             //ตั้งเวลา
             $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
@@ -416,6 +417,7 @@ class admin_create_rich extends Controller
             $this->setTimeRich($strFormat2, 'บุคลากร', $personnal);
             $name_rp = "กำหนดเวลาใช้งาน";
             $this->updateStatus($name_rp, $personnal);
+            // $this->insertNotify('success',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
 
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
             $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->where('timeRich', '!=', null)->where('timeType', '!=', null)->get();
@@ -747,5 +749,14 @@ class admin_create_rich extends Controller
     {
         return Notification::whereNotNull('status')->delete();
         // redirect()->back();
+    }
+
+    public function insertNotify($status,$detail)
+    {
+        $data = new Notification;
+        $data->detail = $detail;
+        $data->status = $status;
+        $data->save();
+        return "Success";
     }
 }

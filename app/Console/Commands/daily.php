@@ -98,41 +98,33 @@ class daily extends Command
                             $arrayUser = array_values($userStudent);
                             $arrayPersonnal = array_values($userPersonnal);
 
-                            if ($row->timeType == 'นิสิต') {
-                                $this->DisableRich('ยังไม่ได้ใช้งาน', $student);
-                                $this->changeRichStu($arrayUser, $valRich);
-                                $this->updateStatus("นิสิต", $valRich);
-                                $this->updateStu($valRich);
+                            if ($row->timeType == 'นิสิต') {   
+                                $statusRichStu = $this->changeRichStu($arrayUser, $valRich);
 
-                                
-                                //notify
-                                $check_config = ConfigAT::where('_id', 1)->get();
-                                $stuR = $check_config[0]['richmenu_student'];
-                                if($stuR == $valRich){
+                                if($statusRichStu == '{}'){
+                                    $this->DisableRich('ยังไม่ได้ใช้งาน', $student);
+                                    $this->updateStatus("นิสิต", $valRich);
+                                    $this->updateStu($valRich);
                                     $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
-                                    $richStu = true;
+                                    
                                 } else {
                                     $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
                                     $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
 
                             } else if ($row->timeType == 'บุคลากร') {
-                                $this->DisableRich('ยังไม่ได้ใช้งาน', $personnal);
-                                $this->changeRichPer($arrayPersonnal, $valRich);
-                                $this->updateStatus("บุคลากร", $valRich);
-                                $this->updatePer($valRich);
+                                $statusRichPer = $this->changeRichPer($arrayPersonnal, $valRich);
 
-                                //notify
-                                $check_config = ConfigAT::where('_id', 1)->get();
-                                $perR = $check_config[0]['richmenu_personnal'];
-                                if($perR == $valRich){
+
+                                if($statusRichPer == '{}'){
+                                    $this->DisableRich('ยังไม่ได้ใช้งาน', $personnal);
+                                    $this->updateStatus("บุคลากร", $valRich);
+                                    $this->updatePer($valRich);
                                     $this->insertNotify('success',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
-                                    $richPer = true;
                                 } else {
                                     $this->insertNotify('fail',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name ไม่สำเร็จ");
                                     $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
-
                             }
                         } if($date < $row->timeRich) {
                             $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
@@ -149,35 +141,35 @@ class daily extends Command
         $expire = User::where('status', 'ใช้งานอยู่')->get();
         $json_expire = json_decode($expire);
 
-        foreach ($json_expire as $row) {
-            foreach ($row as $key => $val) {
-                if ($key == 'username') {
-                    $userName = User::where('username', $val)->get();
-                    $un = $userName[0]['username'];
-                    $uid = $userName[0]['userId'];
-                    $timePass = $userName[0]['password_expire'];
-                    $day = $this->pass_expire($timePass);
+        // foreach ($json_expire as $row) {
+        //     foreach ($row as $key => $val) {
+        //         if ($key == 'username') {
+        //             $userName = User::where('username', $val)->get();
+        //             $un = $userName[0]['username'];
+        //             $uid = $userName[0]['userId'];
+        //             $timePass = $userName[0]['password_expire'];
+        //             $day = $this->pass_expire($timePass);
 
-                    if (is_numeric($un)) {
-                        if ($day <= 30) {
-                            $this->pushTimePass($uid, $timePass);
-                            $text = $this->encodeDataChw($uid, $un);
-                            $url = "https://myid.buu.ac.th/chgpwdLine/" . $text;
-                            $this->pushFlex($uid, $url);
-                            $arrayPostData['to'] = $uid;
-                            $arrayPostData['messages'][0]['type'] = "text";
-                            $arrayPostData['messages'][0]['text'] = "คำเตือน!! รหัสของคุณใกล้หมดอายุ กรุณาเปลี่ยนรหัสผ่าน";
-                            $this->pushMsg($arrayPostData);
-                        } else {
-                            // $this->pushTimePass($uid, $timePass);
-                        }
-                    } else {
-                    }
-                }
-            }
-        }
+        //             if (is_numeric($un)) {
+        //                 if ($day <= 30) {
+        //                     $this->pushTimePass($uid, $timePass);
+        //                     $text = $this->encodeDataChw($uid, $un);
+        //                     $url = "https://myid.buu.ac.th/chgpwdLine/" . $text;
+        //                     $this->pushFlex($uid, $url);
+        //                     $arrayPostData['to'] = $uid;
+        //                     $arrayPostData['messages'][0]['type'] = "text";
+        //                     $arrayPostData['messages'][0]['text'] = "คำเตือน!! รหัสของคุณใกล้หมดอายุ กรุณาเปลี่ยนรหัสผ่าน";
+        //                     $this->pushMsg($arrayPostData);
+        //                 } else {
+        //                     // $this->pushTimePass($uid, $timePass);
+        //                 }
+        //             } else {
+        //             }
+        //         }
+        //     }
+        // }
 
-        Rich::whereNull('name')->delete();
+        // Rich::whereNull('name')->delete();
 
         echo "use Rich Finish";
     }
@@ -203,7 +195,7 @@ class daily extends Command
 
     public function DisableRich($name, $id)
     {
-        $get = array('status' => $name, 'timeRich' => '', 'timeType' => '');
+        $get = array('status' => $name, 'timeRich' => '-', 'timeType' => '-');
         $up = Rich::where('richId', $id);
         $up->update($get, ['upsert' => false]);
     }
@@ -283,6 +275,8 @@ class daily extends Command
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
+
+        return $response;
     }
 
     public function changeRichStu($arrUser, $stu)
@@ -310,6 +304,8 @@ class daily extends Command
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
+
+        return $response;
     }
 
     public function notificationExpire()
@@ -520,4 +516,13 @@ class daily extends Command
         $data->save();
         return "Success";
     }
+
+    
+                                // $gg = gettype($statusRichStu);
+                                // $arrayPostData['to'] = 'Ude92fc5b523ebbfa80a5738ef6cbd495';
+                                // $arrayPostData['messages'][0]['type'] = "text";
+                                // $arrayPostData['messages'][0]['text'] = "$gg";
+                                // $this->pushMsg($arrayPostData);
+
+    
 }

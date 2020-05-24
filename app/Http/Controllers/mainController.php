@@ -36,7 +36,8 @@ class mainController extends Controller
 
     public function showUser(Request $req)
     {
-        $notify = Notification::all();
+        // $notify = Notification::all();
+        $notify = Notification::orderBy('created_at','desc')->get();
         $countId = ConfigAT::count();
         $tal = $countId + 1;
 
