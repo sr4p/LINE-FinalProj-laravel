@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     e.target.setCustomValidity("");
                     if (!e.target.validity.valid) {
                             console.log(e.target)
-                        e.target.setCustomValidity("กรุณากรอกข้อมูลในช่องให้ครบถ้วน");
+                        e.target.setCustomValidity("กรุณากรอกข้อมูลให้ครบถ้วน");
                     }
                 };
                 elements[i].oninput = function(e) {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     e.target.setCustomValidity("");
                     if (!e.target.validity.valid) {
                             console.log(e.target)
-                        e.target.setCustomValidity("กรุณากรอกข้อมูลในช่องให้ครบถ้วน");
+                        e.target.setCustomValidity("กรุณากรอกข้อมูลให้ครบถ้วน");
                     }
                 };
                 elements[i].oninput = function(e) {
@@ -126,6 +126,9 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
 
     if(flagType == true && flagSize == true && flagWH == true){
         // alert('Finish');
+        // document.getElementById("file").classList.add("border");
+        // document.getElementById("file").classList.add("border-success");
+        
     } else {
         if(arrErr.length == 1){
             alert(`${arrErr[0]}`);
@@ -136,6 +139,7 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
         }
         
         $("#file").val('');
+
         
     }
 
@@ -476,7 +480,7 @@ $(document).on('click','#switch-success2',function(e){
 }
 
 function sortTableSt() {
-            var n = 0;
+            var n = 1;
             var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
             table = document.getElementById("myTable");
             switching = true;
@@ -618,7 +622,7 @@ function sortTableSt() {
 
                             <div class="row" style="margin-top:20px">
                                 <div class="col-md-2 text-right" style="margin-top:5px;margin-bottom:5px;">รูปริชเมนู</div>
-                                <input class="form-control-file" type="file" id="file" style="width:250px;" name="file" required>
+                                <input class="form-control-file " type="file" id="file" style="width:250px;" name="file" required>
                             </div>
 
                             <!-- <div class="row mb-3" id="f1"> -->
@@ -900,7 +904,6 @@ function sortTableSt() {
                 </tbody>
             </table>
 
-            
         </div>
         
         

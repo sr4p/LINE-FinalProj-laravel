@@ -24,7 +24,7 @@ class test extends Controller
     public function dateformat()
     {
         echo "GG<br>";
-        $date = "20/05/2020";
+        $date = "22/05/2020";
         $today =  date("d/m/Y");
 
     if($today > $date) {

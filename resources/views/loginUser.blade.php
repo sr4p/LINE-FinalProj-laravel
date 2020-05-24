@@ -39,7 +39,7 @@
         <div class="card" style="width: 330px;height: 430px;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);border: 2px solid #ffb84d;border-radius: 25px; ">
   <div class="card-header" style="border-radius: 25px 25px 0px 0px;">
   <img style="border-radius: 35%;background-color: #ffdd99" src="https://img.icons8.com/color/96/000000/admin-settings-male.png"/><span style="font-size: 17px;" id="usernameShow"></span>
-  <span ><h4 class="mt-3">LOGIN FORM</h4></span>
+  <span ><h4 class="mt-3">LOGIN</h4></span>
   </div>
   <div class="card-body pt-4 pb-2">
 
