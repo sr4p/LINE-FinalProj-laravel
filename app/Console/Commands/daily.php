@@ -57,7 +57,6 @@ class daily extends Command
         $student = $check_rich[0]['richmenu_student'];
         $personnal = $check_rich[0]['richmenu_personnal'];
 
-        // $rich = Rich::whereNotnull('timeRich')->get();
         $rich = Rich::where('timeRich','!=','-')->get();
         $date = date("d/m/Y");
 
@@ -115,8 +114,6 @@ class daily extends Command
 
                             } else if ($row->timeType == 'บุคลากร') {
                                 $statusRichPer = $this->changeRichPer($arrayPersonnal, $valRich);
-
-
                                 if($statusRichPer == '{}'){
                                     $this->DisableRich('ยังไม่ได้ใช้งาน', $personnal);
                                     $this->updateStatus("บุคลากร", $valRich);
