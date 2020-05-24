@@ -176,7 +176,7 @@ $("#delNotification").click(function(e){
             <p class="dropdown-item text-center">ไม่มีการแจ้งเตือน</p>
           </div>
     @else
-          <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
+          <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;max-height: 500px;overflow-y: auto;">
           @foreach($notify as $item)
             @if($item->status == 'success')
               <a class="dropdown-item alert-success mb-1" style="word-wrap: break-word;white-space: normal;" href="/main/Richdata">{{$item->detail}}<br>

@@ -254,16 +254,41 @@ class admin_create_rich extends Controller
 
                 Config::set('linebot.RICHMENU_STUDENT', $student);
                 $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
-
                 $this->changeRichStu($arrayUser);
                 $name_rs = "นิสิต";
                 $this->updateStatus($name_rs, $student);
 
+                //student
+                // $statusRichStu = $this->changeRichStu($arrayUser);
+                // $RichStu = Rich::where('richId', $student )->get();
+                //  $RichStuName =  $RichStu[0]['name'];
+                // if($statusRichStu == '{}'){
+                //     $this->updateStatus("นิสิต", $student);
+                //     $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichStuName เรียบร้อยแล้ว");
+                // } else {
+                //     $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichStuName ไม่สำเร็จ");
+                //     $this->updateStatus("ยังไม่ได้ใช้งาน", $student);
+                // }
+                
+
                 Config::set('linebot.RICHMENU_PERSONNAL', $personnal);
                 $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
+
                 $this->changeRichPer($arrayPersonnal);
                 $name_rp = "บุคลากร";
                 $this->updateStatus($name_rp, $personnal);
+
+                //personnal
+                // $statusRichPer = $this->changeRichPer($arrayPersonnal);
+                // $RichPer = Rich::where('richId', $personnal )->get();
+                //  $RichPerName =  $RichPer[0]['name'];
+                // if($statusRichPer == '{}'){
+                //     $this->updateStatus("บุคลากร", $personnal);
+                //     $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichPerName เรียบร้อยแล้ว");
+                // } else {
+                //     $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichPerName ไม่สำเร็จ");
+                //     $this->updateStatus("ยังไม่ได้ใช้งาน", $personnal);
+                // }
 
                 $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
 
@@ -517,6 +542,8 @@ class admin_create_rich extends Controller
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
+
+        return $response;
     }
 
     public function changeRichPer($arrayPersonnal)
@@ -544,6 +571,8 @@ class admin_create_rich extends Controller
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
+
+        return $response;
     }
 
     public function Out_rich($uid)

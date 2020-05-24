@@ -23,17 +23,21 @@ class test extends Controller
 
     public function dateformat()
     {
-        echo "GG<br>";
-        $date = "22/05/2020";
-        $today =  date("d/m/Y");
 
-    if($today > $date) {
-        echo "$date was in past";
-    } else if ($today == $date) {
-        echo "It's now";
-    } else {
-        echo "$date is in future";
-    }
+        echo "GG<br>";
+        $RichStu = Rich::where('richId','richmenu-df06b83db820172205af9aa6fabf2871')->get();
+        $RichStuName =  $RichStu[0]['name'];
+        echo "out : $RichStuName";
+    //     $date = "22/05/2020";
+    //     $today =  date("d/m/Y");
+
+    // if($today > $date) {
+    //     echo "$date was in past";
+    // } else if ($today == $date) {
+    //     echo "It's now";
+    // } else {
+    //     echo "$date is in future";
+    // }
         // $date = "04/15/2020";
         // echo date("d-m-Y", strtotime($date));
         // echo "=>", date("d/m/Y");
