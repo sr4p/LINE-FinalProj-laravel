@@ -101,8 +101,8 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
     } else {
         flagType = false;
         // alert("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
-        arrErr.push("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
-        $("#file").val('');
+        // arrErr.push("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
+        
 
     }
 
@@ -112,7 +112,7 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
     } else {
         flagSize = false;
         var sizeimg = file.size / 1024;
-        arrErr.push(`- ไฟล์นี้ขนาด(${sizeimg.toFixed(0)}KB) ใหญ่เกิน 1024KB ไม่สามารถใช้งานได้ โปรดเลือกไฟล์ใหม่!\n`);
+        arrErr.push(`- ไฟล์นี้ขนาด(${sizeimg.toFixed(0)}KB) ใหญ่เกิน 1024KB ไม่สามารถใช้งานได้!\n`);
     }
 
 //wh
@@ -121,7 +121,7 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
             flagWH = true;
     } else {
             flagWH = false;
-            arrErr.push(`- ไฟล์ขนาดของรูปภาพนี้(${this.width}x${this.height}) ไม่สามารถใช้งานได้ โปรดเลือกไฟล์ใหม่!\n`);
+            arrErr.push(`- ไฟล์ขนาดของรูปภาพนี้(${this.width}x${this.height}) ไม่สามารถใช้งานได้!\n`);
     }
 
     if(flagType == true && flagSize == true && flagWH == true){
@@ -130,7 +130,12 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
         // document.getElementById("file").classList.add("border-success");
         
     } else {
-        if(arrErr.length == 1){
+
+if(flagType == false){
+    alert("- อัพโหลดไฟล์รูปภาพเป็น PNG หรือ JPEG เท่านั้น!\n");
+    $("#file").val('');
+} else {
+    if(arrErr.length == 1){
             alert(`${arrErr[0]}`);
         } else if(arrErr.length == 2) {
             alert(`${arrErr[0]}${arrErr[1]}`);
@@ -139,11 +144,9 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
         }
         
         $("#file").val('');
-
-        
+}
+  
     }
-
-
     };
     img.onerror = function() {
         alert("อัพโหลดไฟล์รูปภาพเป็นImage file ( PNG หรือ JPEG ) เท่านั้น!");
@@ -856,7 +859,7 @@ function sortTableSt() {
             </div>
         </div>
 
-<div class="container-fluid border pl-0 pr-0" >
+<div class="container-fluid borderless pl-0 pr-0" >
             <table class="table table-borderless table-hover " id="">
                 <thead>
                     <tr style="background-color: rgb(226, 196, 123);">

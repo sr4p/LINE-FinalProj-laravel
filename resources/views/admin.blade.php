@@ -461,7 +461,7 @@ require_once '../vendor/autoload.php';
             </div>
         </div>
         <div class="container-fluid">
-        <table class="table table-borderless table-hover border pl-0 pr-0">
+        <table class="table table-borderless table-hover borderless pl-0 pr-0">
                 <thead>
                     <tr style="background-color: rgb(226, 196, 123);">
                         <th onclick="sortTableUn(0)" scope="col" class="text-center" style="width:100px; cursor:pointer;">ชื่อผู้ใช้ <i id="sortBtn" class="fa fa-sort-down"></i></th>

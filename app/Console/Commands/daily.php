@@ -105,10 +105,11 @@ class daily extends Command
                                     $this->DisableRich('ยังไม่ได้ใช้งาน', $student);
                                     $this->updateStatus("นิสิต", $valRich);
                                     $this->updateStu($valRich);
-                                    $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
+                                    $this->insertNotify('success',"ริชเมนูได้เปลี่ยนตามเวลาที่กำหนดแล้ว ริชเมนูของนิสิต เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
                                     
                                 } else {
-                                    $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                    $this->insertNotify('fail',"ริชเมนูได้เปลี่ยนตามเวลาที่กำหนดแล้ว ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                    // $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
                                     $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
 
@@ -120,9 +121,9 @@ class daily extends Command
                                     $this->DisableRich('ยังไม่ได้ใช้งาน', $personnal);
                                     $this->updateStatus("บุคลากร", $valRich);
                                     $this->updatePer($valRich);
-                                    $this->insertNotify('success',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
+                                    $this->insertNotify('success',"ริชเมนูได้เปลี่ยนตามเวลาที่กำหนดแล้ว ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name เรียบร้อยแล้ว");
                                 } else {
-                                    $this->insertNotify('fail',"ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name ไม่สำเร็จ");
+                                    $this->insertNotify('fail',"ริชเมนูได้เปลี่ยนตามเวลาที่กำหนดแล้ว ริชเมนูของบุคลากร เปลี่ยนเป็น $row->name ไม่สำเร็จ");
                                     $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
                             }

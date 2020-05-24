@@ -179,11 +179,11 @@ $("#delNotification").click(function(e){
           <div class="dropdown-menu dropdown-menu-right bg-light" aria-labelledby="dropdownNotify" style="max-width:500px;">
           @foreach($notify as $item)
             @if($item->status == 'success')
-              <a class="dropdown-item alert-success mb-1" href="/main/Richdata">{{$item->detail}}<br>
+              <a class="dropdown-item alert-success mb-1" style="word-wrap: break-word;white-space: normal;" href="/main/Richdata">{{$item->detail}}<br>
               <p>{{$item->created_at->format('d/m/Y เวลา: H:i:s')}}</p>
               </a>
             @else
-              <a class="dropdown-item alert-danger mb-1" href="/main/Richdata">{{$item->detail}}<br>
+              <a class="dropdown-item alert-danger mb-1" style="word-wrap: break-word;white-space: normal;" href="/main/Richdata">{{$item->detail}}<br>
               <p>{{$item->created_at->format('d/m/Y เวลา: H:i:s')}}</p>
               </a>
             @endif
