@@ -108,7 +108,6 @@ class daily extends Command
                                     
                                 } else {
                                     $this->insertNotify('fail',"ริชเมนูได้เปลี่ยนตามเวลาที่กำหนดแล้ว ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
-                                    // $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $row->name ไม่สำเร็จ");
                                     $this->updateStatus("ยังไม่ได้ใช้งาน", $valRich);
                                 }
 
@@ -166,8 +165,6 @@ class daily extends Command
         //         }
         //     }
         // }
-
-        // Rich::whereNull('name')->delete();
 
         echo "use Rich Finish";
     }

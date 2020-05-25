@@ -121,7 +121,7 @@ if (file.type == "image/jpeg" || file.type == "image/png") {
             flagWH = true;
     } else {
             flagWH = false;
-            arrErr.push(`- ไฟล์ขนาดของรูปภาพนี้(${this.width}x${this.height}) ไม่สามารถใช้งานได้!\n`);
+            arrErr.push(`- ขนาดของรูปภาพนี้คือ ${this.width}x${this.height} ไม่สามารถใช้งานได้!\n`);
     }
 
     if(flagType == true && flagSize == true && flagWH == true){
