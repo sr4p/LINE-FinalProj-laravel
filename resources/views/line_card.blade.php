@@ -6,18 +6,38 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Service</title>
 
-    <script src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
     <script>
         function getId(){
-            liff.init({liffId:"1653845388-jBLvL5n1"}, () => {}, err => console.error(err.code, error.message));
-        liff.getProfile().then(profile => {
-            document.getElementById('u1').value = profile.userId;
-            document.card.submit();
+    //         liff.init({liffId:"1653845388-jBLvL5n1"}, () => {}, err => console.error(err.code, error.message));
+    //     liff.getProfile().then(profile => {
+    //         document.getElementById('u1').value = profile.userId;
+    //         document.card.submit();
+    // }).catch((err) => {
+    //   console.log('error', err);
+    //     });
+
+    const liffId = '1653845388-jBLvL5n1';
+  liff.init({ liffId })
+//   alert("ID : "+liffId);
+    liff.ready.then(() => {
+  // do something you want when liff.init finishes
+  
+      liff.getProfile().then(profile => {
+        document.getElementById('u1').value = profile.userId;
+        document.card.submit();
     }).catch((err) => {
       console.log('error', err);
         });
+})
+
     }
+
+    
+    
+
+
     </script>
 
 </head>

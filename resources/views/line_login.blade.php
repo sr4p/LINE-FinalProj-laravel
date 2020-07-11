@@ -9,57 +9,42 @@
 
     <link rel="stylesheet" href="{{asset('css/main.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('css/util.css')}}">
-   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>
+   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="{{ asset('js/liff-starter.js')}}"></script>
-    <script src="{{asset('js/liff-starter.js')}}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- <script src="{{asset('js/liff-starter.js')}}"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+  <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
-        function getId(){
-            liff.init({liffId:"1653845388-2mPZP8OR"}, () => {}, err => console.error(err.code, error.message));
-        liff.getProfile().then(profile => {
+    
+
+// const pro_id,pro_pic,pro_name;
+function getId(){
+    const liffId = '1653845388-2mPZP8OR';
+  liff.init({ liffId })
+    liff.ready.then(() => {
+      liff.getProfile().then(profile => {
             document.getElementById('u1').value = profile.userId;
             document.getElementById('u2').value = profile.pictureUrl;
             document.getElementById('u3').value = profile.displayName;
+            pro_id= profile.userId;
+            pro_pic= profile.pictureUrl;
+            pro_name= profile.displayName;
+
     }).catch((err) => {
       console.log('error', err);
         });
+})
     }
-    </script>
 
-    <script>
-      $('#frm').bind('submit', function (e) {
-    var button = $('#submit');
-
-    button.prop('disabled', true);
-
-    var valid = true;
-    if (!valid) {
-        e.preventDefault();
-        button.prop('disabled', false);
-    }
-});
-
-(function() {
-  'use strict';
-  window.addEventListener('load', function() {
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function(form) {
-      form.addEventListener('submit', function(event) {
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
-    });
-  }, false);
-})();
-
-//background: rgb(233,187,17);background: linear-gradient(90deg, rgba(233,187,17,1) 15%, rgba(117,117,117,1) 75%);
     </script>
     <style>
     loginbox {width: 350px;
@@ -70,12 +55,64 @@
               transform: translate(-50%,-50%);
               }
     </style>
-    
+
   </head>
 <body style="text-align: center;background: rgb(34,193,195);background: linear-gradient(0deg, rgba(34,193,195,1) 10%, rgba(255,210,114,1) 100%);"  onload="getId()">
+
+<script type="text/javascript">
+
+function close_login(){
+    const liffId = '1653845388-2mPZP8OR';
+  liff.init({ liffId })
+    liff.ready.then(() => {
+      liff.closeWindow();
+})
+    }
+
+    $(document).ready(function() {
+        $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    $("#form_login").submit(function(e){
+        e.preventDefault();
+        var userN = $('input[name="userN"]').val();
+        var passW = $('input[name="passW"]').val();
+        var u1 = $("#u1").val();
+        var u2 = $("#u2").val();
+        var u3 = $("#u3").val();
+        $.ajax({
+            type: 'POST',
+            url: '/line/registerBot',
+            data: {
+              userN: userN,
+              passW: passW,
+              u1:u1,
+              u2:u2,
+              u3:u3
+            },
+            success: function(data) {
+                // $('#fail_login').hidden();
+                if(data.success){
+                  close_login();
+                } else {
+                  $('#fail_login').show();
+                }
+
+            }, error: function(data){
+              $('#fail_login').show();
+              alert("ERRRR login");
+              
+            }
+        });
+    });
+
+    });
+</script>
 <!-- <body style="text-align: center;"  onload="getId()"> -->
-<form id="frm" action='/line/registerBot' method='post' onsubmit="submit.disabled = true; return true;" class="needs-validation" style="width: 100%;height:100%;max-width: 330px;padding: 5px;margin: auto;display: block;" novalidate >
-@csrf
+<form id="form_login" action="/line/registerBot" method="post" class="needs-validation" style="width: 100%;height:100%;max-width: 330px;padding: 5px;margin: auto;display: block;">@csrf
 
 <!-- <div class="card" style="width: 330px;height: 430px;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);border: 1px solid gray;border-radius: 25px; "> -->
 <div class="card" style="width: 330px;height: 430px;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);border: 2px solid #ffb84d;border-radius: 25px; ">
@@ -88,12 +125,8 @@
   </div>
   <div class="card-body pt-4 pb-2">
 
-  @if(session()->has('message'))
-  <!-- <div class=" alert alert-danger" style="color:red;text-align: center;margin-top:-15px;margin-buttom:-10px"> -->
-  <div class="" style="color:red;text-align: center;margin-top:-15px;">
-  {{ session()->get('message') }}
-    </div>
-  @endif
+ 
+  <div id="fail_login" style="color:red;text-align: center;margin-top:-15px;display:none;"><p>กรุณาพิมพ์ไอดีหรือรหัสผ่านให้ถูกต้อง</p></div>
 
   <div class="input-group mb-4 mt-2">
     <div class="input-group-prepend">
@@ -119,7 +152,7 @@
   <a style="font-size: 12px;float:right;margin-top:5px" href="https://myid.buu.ac.th/recovery">ลืมรหัสผ่าน?</a>
   </div>
   <div class="card-footer text-muted" style="border-radius: 0px 0px 25px 25px;">
-  <button class="btn btn-md btn-primary btn-block p-2" type="submit" name="submit" style="border-radius: 25px;">เข้าสู่ระบบ</button>
+    <input class="btn btn-md btn-primary btn-block p-2" type="submit" name="submit_login" id="submit_login" value="เข้าสู่ระบบ" style="border-radius: 25px;" />
   </div>
 </div>
 

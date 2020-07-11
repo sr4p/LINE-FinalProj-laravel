@@ -183,7 +183,7 @@ class line_login extends Controller
     {
         $gg = array('status' => 'ไม่ได้ใช้งาน');
         $dt = User::where('userId', $uid);
-        $dt->update($gg, ['upsert' => true]);
+        $dt->update($gg, ['upsert' => false]);
         $this->Out_rich($uid);
     }
 
@@ -249,6 +249,7 @@ class line_login extends Controller
     }
     
     public function PostApi(Request $req) {
+        
         $richAll = ConfigAT::where('_id', 1)->get();
         
         $ac_token = $richAll[0]['channelAccessToken'];
@@ -267,11 +268,22 @@ class line_login extends Controller
         $this->Rich_Stu = Config::get('linebot.RICHMENU_STUDENT');
         $this->Rich_Personnal = Config::get('linebot.RICHMENU_PERSONNAL');
 
-        $idStu = $req->input('userN');
-        $passStu = $req->input('passW');
-        $userline = $req->input('u1');
-        $picline = $req->input('u2');
-        $displayline = $req->input('u3');
+        // $idStu = $req->input('userN');
+        // $passStu = $req->input('passW');
+
+        $idStu = $req['userN'];
+        $passStu = $req['passW'];
+        $userline = $req['u1'];
+        $picline = $req['u2'];
+        $displayline = $req['u3'];
+
+        // echo '<script type="text/javascript">alert("'.$userline.'");</script>';
+        // $userline = $req->input('u1');
+        // $picline = $req->input('u2');
+        // $displayline = $req->input('u3');
+        $auth = false;
+
+        
 
         $url = 'https://buu-api.buu.ac.th/api/version1/authBuu';
         $data_array =  array(
@@ -307,11 +319,13 @@ class line_login extends Controller
                     else {
                         if($key == 'status' ){
                             if($val == 'fail'){
-                                return redirect()->back()->with('message', 'กรุณาพิมพ์ไอดีหรือรหัสผ่านให้ถูกต้อง');
+                                // redirect()->back()->with('message', 'กรุณาพิมพ์ไอดีหรือรหัสผ่านให้ถูกต้อง');
+                                return response()->json(['error'=>'Failed']);
                                 break;
                             } if($val == 'success'){
+                                $auth = true;
                                 $foo = false;
-                                $this->exit($idStu);
+                                // $this->exit($idStu);
                                 $dataStu['userId'] = $userline;
                             }
                         }
@@ -393,10 +407,26 @@ class line_login extends Controller
                 }
             }
 
-            echo '<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.0/sdk.js"></script>';
-            echo '<script src="liff-starter.js"></script>';
-            echo "<script type='text/javascript'>";
-            echo 'liff.init({ liffId: "1653845388-2mPZP8OR" }, () => liff.closeWindow(), err => console.error(err.code, error.message));';
-            echo "</script>";
+            // echo '<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>';
+            // echo '<script src="liff-starter.js"></script>';
+            // echo "<script type='text/javascript'>";
+            // echo 'const liffId = "1653845388-2mPZP8OR";';
+            // echo 'liff.init({ liffId });';
+            // echo "alert(liffId);";
+            // echo "liff.ready.then(() => {})";
+            // echo "liff.closeWindow();";
+            // echo "</script>";
+  
+    
+            // echo "<script type='text/javascript'>";
+            // echo 'liff.init({ liffId: "1653845388-2mPZP8OR" }, () => liff.closeWindow(), err => console.error(err.code, error.message));';
+            // echo "</script>";
+            // if($auth == true){
+            //     return response()->json(['success'=>'successfully']);
+            // } else {
+            //     return false;
+            // }
+            return response()->json(['success'=>'successfully']);
+            
     }
 }
