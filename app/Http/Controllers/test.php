@@ -24,10 +24,76 @@ class test extends Controller
     public function dateformat()
     {
 
-        echo "GG<br>";
-        $RichStu = Rich::where('richId','richmenu-df06b83db820172205af9aa6fabf2871')->get();
-        $RichStuName =  $RichStu[0]['name'];
-        echo "out : $RichStuName";
+        $userName = User::where('userId','Ude92fc5b523ebbfa80a5738ef6cbd495')->where('status', 'ใช้งานอยู่')->get();  
+        $sche = $userName[0]['schedula']['monday'][0]['subject'];
+        $sche1 = $userName[0]['schedula']['monday'];
+        // $sche1 = $sche[0]['subject'];
+        print_r("$sche : ");
+        // echo("\n");
+        print_r($sche1);
+        // $array_class = array();
+        // $find = json_decode($class);
+        // foreach ($find as $row) 
+
+        // for($i=0;$i<4;$i++){
+        //     $flex = [
+        //         "header"=> [
+        //           "type"=> "box",
+        //           "contents"=> [
+        //               [
+        //               "text"=> "85256459",
+        //               "align"=> "center",
+        //               "weight"=> "bold",
+        //               "color"=> "#000000",
+        //               "size"=> "xl",
+        //               "type"=> "text"
+        //           ],
+        //             [
+        //               "weight"=> "bold",
+        //               "align"=> "center",
+        //               "type"=> "text",
+        //               "size"=> "lg",
+        //               "text"=> "Building : A7G9",
+        //               "color"=> "#000000"
+        //           ],
+        //             [
+        //               "text"=> "Time : 15.30 - 18.30 น.",
+        //               "color"=> "#000000",
+        //               "weight"=> "bold",
+        //               "align"=> "center",
+        //               "type"=> "text",
+        //               "size"=> "lg"
+        //               ]
+        //           ],
+        //           "layout"=> "vertical"
+        //       ],
+        //         "type"=> "bubble",
+        //         "direction"=> "ltr",
+        //         "styles"=> [
+        //           "header"=> [
+        //             "backgroundColor"=> "#F8F6D5"
+        //             ]
+        //           ]
+        //     ];
+
+        //     $array_class[] = $flex;
+        //     // $flex = '';
+        // }
+
+        // print_r($array_class);
+
+
+
+
+        // echo "GG<br>";
+        // $RichStu = Rich::where('richId','richmenu-df06b83db820172205af9aa6fabf2871')->get();
+        // $RichStuName =  $RichStu[0]['name'];
+        // echo "out : $RichStuName";
+
+
+
+
+
     //     $date = "22/05/2020";
     //     $today =  date("d/m/Y");
 

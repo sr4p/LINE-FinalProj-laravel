@@ -153,23 +153,32 @@ class admin_create_rich extends Controller
         $time1 = $req['time_stu'];
         $time2 = $req['time_per'];
 
-        $dateFormat1 = date("d-m-Y", strtotime($time1));
-        $dateFormat2 = date("d-m-Y", strtotime($time2));
+        // if($time1 == "non"){
+        //     $time1 = "";
+        // } if($time2 == "non"){
+        //     $time2 = "";
+        // } else {
+        //     //
+        // }
 
-        $day1 = date("Y-m-d", strtotime($time1));
-        $day2 = date("Y-m-d", strtotime($time2));
-
-        $datetime = new DateTime();
-        $datetime1 = new DateTime($day1);
-        $datetime2 = new DateTime($day2);
-        $difference1 = $datetime->diff($datetime1);
-        $difference2 = $datetime->diff($datetime2);
-        $checkTime = false;
-        $useRichMenu = false;
 
         $dateDays = date("d-m-Y");
-        $strFormatStu = str_replace("-", "/", $dateFormat1);
-        $strFormatPer = str_replace("-", "/", $dateFormat2);
+
+
+
+        
+
+        // $datetime = new DateTime();
+        // $datetime1 = new DateTime($day1);
+        // $datetime2 = new DateTime($day2);
+        // $difference1 = $datetime->diff($datetime1);
+        // $difference2 = $datetime->diff($datetime2);
+        // $checkTime = false;
+        // $useRichMenu = false;
+
+        
+        
+        
 
         $timeRich1 = false;
         $timeRich2 = false;
@@ -308,6 +317,8 @@ class admin_create_rich extends Controller
 
         } else if (empty($time1) && !empty($time2)) {
             //ทำ stu
+        $dateFormat2 = date("d-m-Y", strtotime($time2));
+        // $day2 = date("Y-m-d", strtotime($time2));
 
             Config::set('linebot.RICHMENU_LOGIN', $login);
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
@@ -373,6 +384,8 @@ class admin_create_rich extends Controller
 
         } else if (empty($time2) && !empty($time1)) {
             //ทำ per
+            $dateFormat1 = date("d-m-Y", strtotime($time1));
+        // $day1 = date("Y-m-d", strtotime($time1));
 
             Config::set('linebot.RICHMENU_LOGIN', $login);
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
@@ -403,17 +416,6 @@ class admin_create_rich extends Controller
             $name_rp = "บุคลากร";
             $this->updateStatus($name_rp, $personnal);
 
-            //personnal
-            // $statusRichPer = $this->changeRichPer($arrayPersonnal);
-            // $RichPer = Rich::where('richId', $personnal )->get();
-            //  $RichPerName =  $RichPer[0]['name'];
-            // if($statusRichPer == '{}'){
-            //     $this->updateStatus("บุคลากร", $personnal);
-            //     $this->insertNotify('success',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichPerName เรียบร้อยแล้ว");
-            // } else {
-            //     $this->insertNotify('fail',"ริชเมนูของนิสิต เปลี่ยนเป็น $RichPerName ไม่สำเร็จ");
-            //     $this->updateStatus("ยังไม่ได้ใช้งาน", $personnal);
-            // }
 
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');
             $non = Rich::where('richId', '!=', $login)->where('richId', '!=', $student)->where('richId', '!=', $personnal)->get();
@@ -438,6 +440,11 @@ class admin_create_rich extends Controller
             $this->update();
         } else if (!empty($time1) && !empty($time2)) {
             //ทำเวลา stu || per
+            $dateFormat1 = date("d-m-Y", strtotime($time1));
+        // $day1 = date("Y-m-d", strtotime($time1));
+
+        $dateFormat2 = date("d-m-Y", strtotime($time2));
+        // $day2 = date("Y-m-d", strtotime($time2));
 
             Config::set('linebot.RICHMENU_LOGIN', $login);
             $this->Rich_Login = Config::get('linebot.RICHMENU_LOGIN');

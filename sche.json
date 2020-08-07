@@ -1,0 +1,83 @@
+{
+  "line": {
+    "type": "imagemap",
+    "baseSize": {
+      "height": 1040,
+      "width": 1040
+    },
+    "baseUrl": "https://i.imgur.com/gjU2XVM.png",
+    "altText": "เลือกวันที่ต้องการ",
+    "actions": [
+      {
+        "area": {
+          "height": 100,
+          "width": 417,
+          "y": 354,
+          "x": 68
+        },
+        "type": "message",
+        "text": "วันอาทิตย์"
+      },
+      {
+        "area": {
+          "width": 421,
+          "x": 552,
+          "y": 359,
+          "height": 100
+        },
+        "text": "วันจันทร์",
+        "type": "message"
+      },
+      {
+        "area": {
+          "height": 98,
+          "x": 64,
+          "width": 419,
+          "y": 506
+        },
+        "type": "message",
+        "text": "วันอังคาร"
+      },
+      {
+        "text": "วันพุธ",
+        "type": "message",
+        "area": {
+          "height": 96,
+          "width": 424,
+          "y": 506,
+          "x": 548
+        }
+      },
+      {
+        "type": "message",
+        "area": {
+          "height": 100,
+          "y": 648,
+          "x": 63,
+          "width": 422
+        },
+        "text": "วันพฤหัสบดี"
+      },
+      {
+        "type": "message",
+        "area": {
+          "height": 96,
+          "x": 550,
+          "width": 417,
+          "y": 652
+        },
+        "text": "วันศุกร์"
+      },
+      {
+        "area": {
+          "height": 98,
+          "y": 790,
+          "x": 298,
+          "width": 416
+        },
+        "text": "วันเสาร์",
+        "type": "message"
+      }
+    ]
+  }
+}

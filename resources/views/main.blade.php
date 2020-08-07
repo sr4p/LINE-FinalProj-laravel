@@ -150,7 +150,7 @@ $("#delNotification").click(function(e){
                 </a>
               </div>
               @endif
-              <div class="col text-center">
+              <div class="col-sm text-center">
               <a href="/main/Userdata"><img src="https://i.imgur.com/HxE3z2I.png" title="จัดการผู้ใช้ไลน์" class="rounded-circle " style="cursor:pointer;" width="120" height="120">
                   <p class="text-left text-form text-center" style="margin-top:10px;">จัดการผู้ใช้ไลน์</p>
                 </a>

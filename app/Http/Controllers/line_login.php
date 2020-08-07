@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
-use Illuminate\Http\Request;
-use \RecursiveIteratorIterator;
-use \RecursiveArrayIterator;
-use \App\User;
-use \App\ConfigAT;
 use Config;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
+use \App\ConfigAT;
+use \App\User;
+use \RecursiveArrayIterator;
+use \RecursiveIteratorIterator;
 
 class line_login extends Controller
 {
@@ -18,25 +16,28 @@ class line_login extends Controller
     public $Rich_Stu;
     public $Rich_Personnal;
 
-    public function index(){
+    public function index()
+    {
         return view('line_login');
     }
 
-    public function close(){
+    public function close()
+    {
         return view('line_login_close');
     }
 
-    public function insert($arrData,$uidline,$picline,$displayname){
+    public function insert($arrData, $uidline, $picline, $displayname)
+    {
         $total = User::count();
         $data = new User;
-        $data->_id = $total+1;
+        $data->_id = $total + 1;
         $data->picture = $picline;
         $data->displayName = $displayname;
         $data->status = 'ใช้งานอยู่';
-        $data->password_expire = '2020-06-02';
-        
+        $data->password_expire = '2020-08-30';
+
         foreach ($arrData as $key => $val) {
-            if(is_array($val)) {
+            if (is_array($val)) {
             } else {
                 $data->$key = $val;
             }
@@ -45,12 +46,13 @@ class line_login extends Controller
         return "Success";
     }
 
-    public function insertAgain($idStu,$arrData,$uidline,$picline,$displayname){
-        $user = User::where('username',$idStu)->where('status','ใช้งานอยู่')->get();
+    public function insertAgain($idStu, $arrData, $uidline, $picline, $displayname)
+    {
+        $user = User::where('username', $idStu)->where('status', 'ใช้งานอยู่')->get();
 
-        $profile = array(); 
+        $profile = array();
         foreach ($arrData as $key => $val) {
-            if(is_array($val)) {
+            if (is_array($val)) {
             } else {
                 $profile[$key] = $val;
             }
@@ -60,107 +62,113 @@ class line_login extends Controller
         $profile['picture'] = $picline;
         $profile['displayName'] = $displayname;
         $profile['status'] = 'ใช้งานอยู่';
+        $profile['password_expire'] = '2020-08-30';
 
-
-        $dt = User::where('username',$idStu)->where('status','ไม่ได้ใช้งาน');
-        $dt->update($profile, ['upsert' => true]);
+        $dt = User::where('username', $idStu)->where('status', 'ไม่ได้ใช้งาน');
+        $dt->update($profile, ['upsert' => false]);
         $this->Out_rich($uidline);
     }
 
-    public function pushMsg($arrayPostData){
+    public function pushMsg($arrayPostData)
+    {
         $strUrl = "https://api.line.me/v2/bot/message/push";
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,$strUrl);
+        curl_setopt($ch, CURLOPT_URL, $strUrl);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             "Content-Type: application/json",
             "Authorization: Bearer $this->access_token",
-            "cache-control: no-cache"
-          ));
+            "cache-control: no-cache",
+        ));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrayPostData));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $result = curl_exec($ch);
-        curl_close ($ch);
+        curl_close($ch);
     }
 
-    public function rich($userline){
+    public function rich($userline)
+    {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => "https://api.line.me/v2/bot/richmenu/bulk/link",
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => json_encode(array(
-            "richMenuId"=>"$this->Rich_Stu",
-            "userIds"=>["$userline"]
-          )),
-          CURLOPT_HTTPHEADER => array(
-            "Content-Type: application/json",
-            "Authorization: Bearer $this->access_token",
-            "cache-control: no-cache"
-          ),
+            CURLOPT_URL => "https://api.line.me/v2/bot/richmenu/bulk/link",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode(array(
+                "richMenuId" => "$this->Rich_Stu",
+                "userIds" => ["$userline"],
+            )),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json",
+                "Authorization: Bearer $this->access_token",
+                "cache-control: no-cache",
+            ),
         ));
-        
+
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
     }
 
-    public function richTech($userline){
+    public function richTech($userline)
+    {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => "https://api.line.me/v2/bot/richmenu/bulk/link",
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => json_encode(array(
-            "richMenuId"=>"$this->Rich_Personnal",
-            "userIds"=>["$userline"]
-          )),
-          CURLOPT_HTTPHEADER => array(
-            "Content-Type: application/json",
-            "Authorization: Bearer $this->access_token",
-            "cache-control: no-cache"
-          ),
+            CURLOPT_URL => "https://api.line.me/v2/bot/richmenu/bulk/link",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode(array(
+                "richMenuId" => "$this->Rich_Personnal",
+                "userIds" => ["$userline"],
+            )),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json",
+                "Authorization: Bearer $this->access_token",
+                "cache-control: no-cache",
+            ),
         ));
-        
+
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
     }
 
-    function encodeData($userId,$username){
-        $digit = date('d')%7+5;
-        
-		$ref = $this->getRef($digit);
-		$str = $this->getRef($digit).$ref.$this->getRef($digit+1)."|$userId|$username|".$ref;
-		return base64_encode($str);
-	}
-	
-	function getRef($length){
-		 $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		 $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
-		 $codeAlphabet.= "0123456789";
-		 $max = strlen($codeAlphabet);
-        $refcode=null;
-		for ($i=0; $i < $length; $i++) {
-			$refcode .= $codeAlphabet[rand(0, $max-1)];
-		}
-		return $refcode;
-	}
-    
-    public function sendData($userid,$username){
-        $text = $this->encodeData($userid,$username); 
-    
-        $url = "https://myid.buu.ac.th/lineAccount/".$text;	
+    public function encodeData($userId, $username)
+    {
+        $digit = date('d') % 7 + 5;
+
+        $ref = $this->getRef($digit);
+        $str = $this->getRef($digit) . $ref . $this->getRef($digit + 1) . "|$userId|$username|" . $ref;
+        return base64_encode($str);
+    }
+
+    public function getRef($length)
+    {
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet .= "0123456789";
+        $max = strlen($codeAlphabet);
+        $refcode = null;
+        for ($i = 0; $i < $length; $i++) {
+            $refcode .= $codeAlphabet[rand(0, $max - 1)];
+        }
+        return $refcode;
+    }
+
+    public function sendData($userid, $username)
+    {
+        $text = $this->encodeData($userid, $username);
+
+        $url = "https://myid.buu.ac.th/lineAccount/" . $text;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -169,14 +177,14 @@ class line_login extends Controller
         curl_close($ch);
     }
 
-    public function exit($username){
-        $user = User::where('username',$username)->where('status','ใช้งานอยู่')->get();
+    function exit($username) {
+        $user = User::where('username', $username)->where('status', 'ใช้งานอยู่')->get();
         $count = count($user);
-            if($count == 0){
-                //
-            } else {
-                $this->logout($id);
-            }
+        if ($count == 0) {
+            //
+        } else {
+            $this->logout($id);
+        }
     }
 
     public function logout($uid)
@@ -208,18 +216,19 @@ class line_login extends Controller
         curl_close($curl);
     }
 
-    public function outUser($uid){
+    public function outUser($uid)
+    {
         $richAll = ConfigAT::where('_id', 1)->get();
         $this->access_token = $richAll[0]['channelAccessToken'];
 
-        $nameWhere = User::where('userId', $uid)->where('status','ใช้งานอยู่')->get();
+        $nameWhere = User::where('userId', $uid)->where('status', 'ใช้งานอยู่')->get();
         $name = $nameWhere[0]['username'];
 
         $gg = array('status' => 'ไม่ได้ใช้งาน');
-        $dt = User::where('userId', $uid)->where('status','ใช้งานอยู่');
+        $dt = User::where('userId', $uid)->where('status', 'ใช้งานอยู่');
         $dt->update($gg, ['upsert' => true]);
         $this->Out_rich($uid);
-        
+
         return response()->json("Logout : $name");
     }
 
@@ -235,23 +244,23 @@ class line_login extends Controller
         return response()->json(array($user));
     }
 
-
     public function loginAgain($idStu)
     {
-        $stu = User::where('username', $idStu)->where('status','ใช้งานอยู่')->get();
+        $stu = User::where('username', $idStu)->where('status', 'ใช้งานอยู่')->get();
         $uid = $stu[0]['userId'];
-        if(count($stu) != 0){
+        if (count($stu) != 0) {
             $this->Out_rich($uid);
             //
         } else {
             //
         }
     }
-    
-    public function PostApi(Request $req) {
-        
+
+    public function PostApi(Request $req)
+    {
+
         $richAll = ConfigAT::where('_id', 1)->get();
-        
+
         $ac_token = $richAll[0]['channelAccessToken'];
         $ac_secret = $richAll[0]['channelSecret'];
         $cLogin = $richAll[0]['richmenu_login'];
@@ -283,150 +292,303 @@ class line_login extends Controller
         // $displayline = $req->input('u3');
         $auth = false;
 
-        
-
         $url = 'https://buu-api.buu.ac.th/api/version1/authBuu';
-        $data_array =  array(
+        $data_array = array(
             'username' => $idStu,
             'password' => $passStu);
 
-            $context = stream_context_create(array(
-                'http' => array(
-                    'method' => 'POST',
-                    'header' => "Content-Type: application/json",
-                    'content' => json_encode($data_array))
-            ));
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => "Content-Type: application/json",
+                'content' => json_encode($data_array)),
+        ));
 
-            $response = file_get_contents('https://buu-api.buu.ac.th/api/version1/authBuu', FALSE, $context);
+        $response = file_get_contents('https://buu-api.buu.ac.th/api/version1/authBuu', false, $context);
 
-            if($response === FALSE){
-                echo "Failed";
-                die('Error');
-            }
+        if ($response === false) {
+            echo "Failed";
+            die('Error');
+        }
 
-             $responseData = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($response, TRUE)),RecursiveIteratorIterator::SELF_FIRST);
-            
-            $nameFull = null;
-            $surFull = null;
+        $responseData = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($response, true)), RecursiveIteratorIterator::SELF_FIRST);
 
-            //MongoDB
-            $dataStu = array();
-            $foo = true;
-            
-                foreach ($responseData as $key => $val) {
-                    if(is_array($val)) {
-                    }
-                    else {
-                        if($key == 'status' ){
-                            if($val == 'fail'){
-                                // redirect()->back()->with('message', 'กรุณาพิมพ์ไอดีหรือรหัสผ่านให้ถูกต้อง');
-                                return response()->json(['error'=>'Failed']);
-                                break;
-                            } if($val == 'success'){
-                                $auth = true;
-                                $foo = false;
-                                // $this->exit($idStu);
-                                $dataStu['userId'] = $userline;
-                            }
-                        }
-                        if($key == 'username') {
-                            $dataMy[$key] = $val;
-                        }
-    
-                        if($key == 'status' || $key == 'study_year'){
-                            //
-                        }
-                        else {
-                          $dataStu[$key] = $val;
-                          if($key == 'name_thai'){
-                            $na = $val;
-                            }
-                            if($key == 'surname_thai'){
-                              $sur = $val;
-                            }
-                        }
+        $nameFull = null;
+        $surFull = null;
+
+        //MongoDB
+        $dataStu = array();
+        $foo = true;
+
+        foreach ($responseData as $key => $val) {
+            if (is_array($val)) {
+            } else {
+                if ($key == 'status') {
+                    if ($val == 'fail') {
+                        // redirect()->back()->with('message', 'กรุณาพิมพ์ไอดีหรือรหัสผ่านให้ถูกต้อง');
+                        return response()->json(['error' => 'Failed']);
+                        break;
+                    }if ($val == 'success') {
+                        $auth = true;
+                        $foo = false;
+                        // $this->exit($idStu);
+                        $dataStu['userId'] = $userline;
                     }
                 }
-            
-            $nameFull = $na;
-            $surFull = $sur;
+                if ($key == 'username') {
+                    $dataMy[$key] = $val;
+                }
 
-
-
-            if(is_numeric($idStu)){
-                $useAccount = User::where('username',$idStu)->where('status','ใช้งานอยู่')->get();
-                if(count($useAccount) == 1){
-                    $uId = $useAccount[0]['userId'];
-                    $this->logout($uId);
-                } else {
+                if ($key == 'status' || $key == 'study_year') {
                     //
-                }
-
-                $user = User::where('username',$idStu)->where('status','ไม่ได้ใช้งาน')->get();    
-                if(count($user) == 1){
-                    $this->insertAgain($idStu,$dataStu,$userline,$picline,$displayline);
                 } else {
-                    $this->insert($dataStu,$userline,$picline,$displayline);
-                }
-
-                $this->sendData($userline,$idStu);
-                if($foo == false){
-                    //rich menu
-                    $this->rich($userline);
-                    //sendMgs
-                    $arrayPostData['to'] = $userline;
-                    $arrayPostData['messages'][0]['type'] = "text";
-                    $arrayPostData['messages'][0]['text'] = "สวัสดีคุณ$nameFull $surFull";
-                    $arrayPostData['messages'][1]['type'] = "text";
-                    $arrayPostData['messages'][1]['text'] = "ยินดีต้อนรับเข้าสู่ระบบ มาเริ่มใช้งานกันเลย!";
-                    $this->pushMsg($arrayPostData);
-                } else {
-                    //
-
-                }
-            } if(!is_numeric($idStu)) {
-                $user = User::where('username',$idStu)->where('status','ไม่ได้ใช้งาน')->get();
-                if(count($user) == 1){
-                    $this->insertAgain($idStu,$dataStu,$userline,$picline,$displayline);
-                } else {
-                    $this->insert($dataStu,$userline,$picline,$displayline);
-                }
-                $this->sendData($userline,$idStu);
-                if($foo == false){
-                    //rich menu
-                    $this->richTech($userline);
-                    //sendMgs
-                    $arrayPostData['to'] = $userline;
-                    $arrayPostData['messages'][0]['type'] = "text";
-                    $arrayPostData['messages'][0]['text'] = "สวัสดีคุณ$nameFull $surFull";
-                    $arrayPostData['messages'][1]['type'] = "text";
-                    $arrayPostData['messages'][1]['text'] = "ยินดีต้อนรับเข้าสู่ระบบ มาเริ่มใช้งานกันเลย!";
-                    $this->pushMsg($arrayPostData);
-                } else {
-                    //
+                    $dataStu[$key] = $val;
+                    if ($key == 'name_thai') {
+                        $na = $val;
+                    }
+                    if ($key == 'surname_thai') {
+                        $sur = $val;
+                    }
                 }
             }
+        }
 
-            // echo '<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>';
-            // echo '<script src="liff-starter.js"></script>';
-            // echo "<script type='text/javascript'>";
-            // echo 'const liffId = "1653845388-2mPZP8OR";';
-            // echo 'liff.init({ liffId });';
-            // echo "alert(liffId);";
-            // echo "liff.ready.then(() => {})";
-            // echo "liff.closeWindow();";
-            // echo "</script>";
-  
-    
-            // echo "<script type='text/javascript'>";
-            // echo 'liff.init({ liffId: "1653845388-2mPZP8OR" }, () => liff.closeWindow(), err => console.error(err.code, error.message));';
-            // echo "</script>";
-            // if($auth == true){
-            //     return response()->json(['success'=>'successfully']);
-            // } else {
-            //     return false;
-            // }
-            return response()->json(['success'=>'successfully']);
-            
+        $nameFull = $na;
+        $surFull = $sur;
+
+        if (is_numeric($idStu)) {
+            $useAccount = User::where('username', $idStu)->where('status', 'ใช้งานอยู่')->get();
+            if (count($useAccount) == 1) {
+                $uId = $useAccount[0]['userId'];
+                $this->logout($uId);
+            } else {
+                //
+            }
+
+            $user = User::where('username', $idStu)->where('status', 'ไม่ได้ใช้งาน')->get();
+            if (count($user) == 1) {
+                $this->insertAgain($idStu, $dataStu, $userline, $picline, $displayline);
+            } else {
+                $this->insert($dataStu, $userline, $picline, $displayline);
+            }
+
+            $this->sendData($userline, $idStu);
+            if ($foo == false) {
+
+                $data_schedula = array();
+                $data_schedula['schedula'] = [
+                    'monday' => [
+                        [
+                            'subject' => "84520459",
+                            'building' => "IF-3M210",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "84520459",
+                            'building' => "IF-5T01",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                        [
+                            'subject' => "84549159",
+                            'building' => "IF-3M210",
+                            'time_start' => "16:00",
+                            'time_end' => "18:00",
+                        ],
+                    ],
+                    'tuesday' => [
+                        [
+                            'subject' => "88620259",
+                            'building' => "IF-6T05",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "88620259",
+                            'building' => "IF-3C01",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                    ],
+                    'wednesday' => [
+                        [
+                            'subject' => "88636159",
+                            'building' => "IF-5T05",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "88648159",
+                            'building' => "IF-4M210",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                        [
+                            'subject' => "88634559",
+                            'building' => "IF-6T05",
+                            'time_start' => "15:00",
+                            'time_end' => "17:00",
+                        ],
+                        [
+                            'subject' => "88634559",
+                            'building' => "IF-4C04",
+                            'time_start' => "18:00",
+                            'time_end' => "20:00",
+                        ],
+                    ],
+                    'thursday' => [],
+                    'friday' => [
+                        [
+                            'subject' => "99930459",
+                            'building' => "KB-508",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "88643159",
+                            'building' => "IF-7T05",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                    ],
+                    'saturday' => [],
+                    'sunday' => [],
+                ];
+                $data_schedula['cost'] = [
+                        'register' => 15000,
+                        'library' => 0,
+                        'rental' => 300,
+                        'other' => 0,
+                ];
+
+                $update_sche = User::where('username', $idStu);
+                $update_sche->update($data_schedula, ['upsert' => false]);
+
+                //rich menu
+                $this->rich($userline);
+                //sendMgs
+                $arrayPostData['to'] = $userline;
+                $arrayPostData['messages'][0]['type'] = "text";
+                $arrayPostData['messages'][0]['text'] = "สวัสดีคุณ$nameFull $surFull";
+                $arrayPostData['messages'][1]['type'] = "text";
+                $arrayPostData['messages'][1]['text'] = "ยินดีต้อนรับเข้าสู่ระบบ มาเริ่มใช้งานกันเลย!";
+                $this->pushMsg($arrayPostData);
+            } else {
+                //
+
+            }
+        } else if (!is_numeric($idStu)) {
+
+            $user = User::where('username', $idStu)->where('status', 'ไม่ได้ใช้งาน')->get();
+            if (count($user) == 1) {
+                $this->insertAgain($idStu, $dataStu, $userline, $picline, $displayline);
+            } else {
+                $this->insert($dataStu, $userline, $picline, $displayline);
+            }
+            $this->sendData($userline, $idStu);
+            if ($foo == false) {
+
+                $data_schedula = array();
+                $data_schedula['schedula_edu'] = [
+                    'monday' => [
+                        [
+                            'subject' => "84520459",
+                            'building' => "IF-3M210",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "84520459",
+                            'building' => "IF-5T01",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                        [
+                            'subject' => "84520459",
+                            'building' => "IF-5T01",
+                            'time_start' => "18:00",
+                            'time_end' => "20:00",
+                        ]
+                    ],
+                    'tuesday' => [
+                        [
+                            'subject' => "88620259",
+                            'building' => "IF-6T05",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "88620259",
+                            'building' => "IF-3C01",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ],
+                    ],
+                    'wednesday' => [
+                        [
+                            'subject' => "88636159",
+                            'building' => "IF-5T05",
+                            'time_start' => "10:00",
+                            'time_end' => "12:00",
+                        ],
+                        [
+                            'subject' => "88636159",
+                            'building' => "IF-5T05",
+                            'time_start' => "16:00",
+                            'time_end' => "18:00",
+                        ]
+                    ],
+                    'thursday' => [],
+                    'friday' => [
+                        [
+                            'subject' => "88643159",
+                            'building' => "IF-7T05",
+                            'time_start' => "13:00",
+                            'time_end' => "15:00",
+                        ]
+                    ],
+                    'saturday' => [],
+                    'sunday' => [],
+                ];
+                $data_schedula['schedula_test'] = [
+                    [
+                        'days' => '24/08/2563',
+                        'building' => 'IF-4M210',
+                        'time_start' => '10:00',
+                        'time_end' => '12:00',
+                    ],
+                    [
+                        'days' => '25/08/2563',
+                        'building' => 'IF-6T05',
+                        'time_start' => '13:00',
+                        'time_end' => '15:00',
+                    ],
+                    [
+                        'days' => '26/08/2563',
+                        'building' => 'IF-3M210',
+                        'time_start' => '16:00',
+                        'time_end' => '18:00',
+                    ],
+                ];
+
+                $update_sche = User::where('username', $idStu);
+                $update_sche->update($data_schedula, ['upsert' => false]);
+
+                //rich menu
+                $this->richTech($userline);
+                //sendMgs
+                $arrayPostData['to'] = $userline;
+                $arrayPostData['messages'][0]['type'] = "text";
+                $arrayPostData['messages'][0]['text'] = "สวัสดีคุณ$nameFull $surFull";
+                $arrayPostData['messages'][1]['type'] = "text";
+                $arrayPostData['messages'][1]['text'] = "ยินดีต้อนรับเข้าสู่ระบบ มาเริ่มใช้งานกันเลย!";
+                $this->pushMsg($arrayPostData);
+            } else {
+                //
+            }
+        }
+        return response()->json(['success' => 'successfully']);
+
     }
 }

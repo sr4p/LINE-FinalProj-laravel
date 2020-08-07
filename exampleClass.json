@@ -1,0 +1,376 @@
+{
+  "type": "flex",
+  "contents": {
+    "contents": [
+      
+    ],
+    "type": "carousel"
+  },
+  "altText": "ตารางเรียน"
+}
+
+
+
+{
+  "type": "flex",
+  "contents": {
+    "contents": [
+      {
+        
+        "header": {
+          "type": "box",
+          "contents": [
+            {
+              "text": "85256459",
+              "align": "center",
+              "weight": "bold",
+              "color": "#000000",
+              "size": "xl",
+              "type": "text"
+            },
+            {
+              "weight": "bold",
+              "align": "center",
+              "type": "text",
+              "size": "lg",
+              "text": "Building : A7G9",
+              "color": "#000000"
+            },
+            {
+              "text": "Time : 15.30 - 18.30 น.",
+              "color": "#000000",
+              "weight": "bold",
+              "align": "center",
+              "type": "text",
+              "size": "lg"
+            }
+          ],
+          "layout": "vertical"
+        },
+        "type": "bubble",
+        "direction": "ltr",
+        "styles": {
+          "header": {
+            "backgroundColor": "#F8F6D5"
+          }
+        }
+      }
+    ],
+    "type": "carousel"
+  },
+  "altText": "ตารางเรียน"
+}
+
+
+
+
+
+
+{
+  "line": {
+    "contents": {
+      "contents": [
+        {
+          "styles": {
+            "header": {
+              "backgroundColor": "#F8F6D5"
+            }
+          },
+          "header": {
+            "layout": "vertical",
+            "type": "box",
+            "contents": [
+              {
+                "weight": "bold",
+                "size": "xl",
+                "text": "84511159",
+                "color": "#000000",
+                "align": "center",
+                "type": "text"
+              },
+              {
+                "color": "#000000",
+                "text": "Building : T5D5",
+                "size": "lg",
+                "align": "center",
+                "weight": "bold",
+                "type": "text"
+              },
+              {
+                "type": "text",
+                "color": "#000000",
+                "weight": "bold",
+                "size": "lg",
+                "text": "Time : 9.30 - 11.30 น.",
+                "align": "center"
+              }
+            ]
+          },
+          "type": "bubble",
+          "direction": "ltr"
+        },
+        {
+          "header": {
+            "contents": [
+              {
+                "type": "text",
+                "color": "#000000",
+                "align": "center",
+                "text": "85256459",
+                "weight": "bold",
+                "size": "xl"
+              },
+              {
+                "align": "center",
+                "color": "#000000",
+                "text": "Building : A7G9",
+                "type": "text",
+                "size": "lg",
+                "weight": "bold"
+              },
+              {
+                "weight": "bold",
+                "align": "center",
+                "color": "#000000",
+                "size": "lg",
+                "text": "Time : 15.30 - 18.30 น.",
+                "type": "text"
+              }
+            ],
+            "layout": "vertical",
+            "type": "box"
+          },
+          "styles": {
+            "header": {
+              "backgroundColor": "#F8F6D5"
+            }
+          },
+          "direction": "ltr",
+          "type": "bubble"
+        },{
+          "header": {
+            "contents": [
+              {
+                "type": "text",
+                "color": "#000000",
+                "align": "center",
+                "text": "85256459",
+                "weight": "bold",
+                "size": "xl"
+              },
+              {
+                "align": "center",
+                "color": "#000000",
+                "text": "Building : A7G9",
+                "type": "text",
+                "size": "lg",
+                "weight": "bold"
+              },
+              {
+                "weight": "bold",
+                "align": "center",
+                "color": "#000000",
+                "size": "lg",
+                "text": "Time : 15.30 - 18.30 น.",
+                "type": "text"
+              }
+            ],
+            "layout": "vertical",
+            "type": "box"
+          },
+          "styles": {
+            "header": {
+              "backgroundColor": "#F8F6D5"
+            }
+          },
+          "direction": "ltr",
+          "type": "bubble"
+        }
+      ],
+      "type": "carousel"
+      
+    },
+    "type": "flex",
+    "altText": "ตารางเรียน"
+  }
+}
+
+
+
+
+{
+  "header": {
+    "contents": [
+      {
+        "type": "text",
+        "color": "#000000",
+        "align": "center",
+        "text": "85256459",
+        "weight": "bold",
+        "size": "xl"
+      },
+      {
+        "align": "center",
+        "color": "#000000",
+        "text": "Building : A7G9",
+        "type": "text",
+        "size": "lg",
+        "weight": "bold"
+      },
+      {
+        "weight": "bold",
+        "align": "center",
+        "color": "#000000",
+        "size": "lg",
+        "text": "Time : 15.30 - 18.30 น.",
+        "type": "text"
+      }
+    ],
+    "layout": "vertical",
+    "type": "box"
+  },
+  "styles": {
+    "header": {
+      "backgroundColor": "#F8F6D5"
+    }
+  },
+  "direction": "ltr",
+  "type": "bubble"
+}
+
+
+
+
+
+{
+  "type": "flex",
+  "contents": {
+    "contents": [
+      {
+        "header": {
+          "layout": "vertical",
+          "type": "box",
+          "contents": [
+            {
+              "weight": "bold",
+              "type": "text",
+              "text": "84511159",
+              "color": "#000000",
+              "align": "center",
+              "size": "xl"
+            },
+            {
+              "type": "text",
+              "size": "lg",
+              "align": "center",
+              "weight": "bold",
+              "color": "#000000",
+              "text": "Building : T5D5"
+            },
+            {
+              "weight": "bold",
+              "size": "lg",
+              "align": "center",
+              "color": "#000000",
+              "text": "Time : 9.30 - 11.30 น.",
+              "type": "text"
+            }
+          ]
+        },
+        "styles": {
+          "header": {
+            "backgroundColor": "#F8F6D5"
+          }
+        },
+        "type": "bubble",
+        "direction": "ltr"
+      },
+      ////////////////////////////////////////////////////////////////////////////////////////
+      {
+        "direction": "ltr",
+        "header": {
+          "type": "box",
+          "contents": [
+            {
+              "text": "85256459",
+              "align": "center",
+              "weight": "bold",
+              "color": "#000000",
+              "size": "xl",
+              "type": "text"
+            },
+            {
+              "weight": "bold",
+              "align": "center",
+              "type": "text",
+              "size": "lg",
+              "text": "Building : A7G9",
+              "color": "#000000"
+            },
+            {
+              "text": "Time : 15.30 - 18.30 น.",
+              "color": "#000000",
+              "weight": "bold",
+              "align": "center",
+              "type": "text",
+              "size": "lg"
+            }
+          ],
+          "layout": "vertical"
+        },
+        "type": "bubble",
+        "styles": {
+          "header": {
+            "backgroundColor": "#F8F6D5"
+          }
+        }
+      }
+      ///////////////////////////////////////////////////////////////
+    ],
+    "type": "carousel"
+  },
+  "altText": "ตารางเรียน"
+}
+
+
+
+
+[
+  "direction"=> "ltr",
+  "header"=> [
+    "type"=> "box",
+    "contents"=> [
+        [
+        "text"=> "85256459",
+        "align"=> "center",
+        "weight"=> "bold",
+        "color"=> "#000000",
+        "size"=> "xl",
+        "type"=> "text"
+    ],
+      [
+        "weight"=> "bold",
+        "align"=> "center",
+        "type"=> "text",
+        "size"=> "lg",
+        "text"=> "Building : A7G9",
+        "color"=> "#000000"
+    ],
+      [
+        "text"=> "Time : 15.30 - 18.30 น.",
+        "color"=> "#000000",
+        "weight"=> "bold",
+        "align"=> "center",
+        "type"=> "text",
+        "size"=> "lg"
+        ]
+    ],
+    "layout"=> "vertical"
+],
+  "type"=> "bubble",
+  "styles"=> [
+    "header"=> [
+      "backgroundColor"=> "#F8F6D5"
+      ]
+    ]
+    ]

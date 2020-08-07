@@ -17,6 +17,7 @@ class insertAdmin extends Controller
     }
 
     public function insert(Request $req, Response $res){
+        $admin = new Admin;
         $admin->username = $req['username'];
         $admin->type = $req['type'];
         $admin->name_thai = $req['name_thai'];
@@ -40,7 +41,7 @@ class insertAdmin extends Controller
             'email' => $req['email'], 'tel' => $req['tel'],'status' => $req['status'],
         );
         $check = Admin::where('username', $req['username'])
-            ->update($data, ['upsert' => true]);
+            ->update($data, ['upsert' => false]);
         if ($check) {
             return response('success', 200);
         } else {

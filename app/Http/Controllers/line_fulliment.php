@@ -30,7 +30,6 @@ class line_fulliment extends Controller
         $agent = \Dialogflow\WebhookClient::fromData($request->json()->all());
         $intent = $agent->getIntent();
         $userId = $request['originalDetectIntentRequest']['payload']['data']['source']['userId'];
-
         $today = date("d/m/Y H:i:s");
         $userName = User::where('userId', $userId)->where('status', 'ใช้งานอยู่')->get();
 
@@ -76,6 +75,45 @@ class line_fulliment extends Controller
                 $text = $this->encodeDataChw($userId, $un);
                 $url = "https://myid.buu.ac.th/chgpwdLine/" . $text;
                 $this->pushFlexPassword($userId, $url);
+            }
+
+            //schedule Tech
+            else if ('schedule2Teacher-selectday-edu-monday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'monday');
+            } else if ('schedule2Teacher-selectday-edu-tuesday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'tuesday');
+            } else if ('schedule2Teacher-selectday-edu-wednesday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'wednesday');
+            } else if ('schedule2Teacher-selectday-edu-thursday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'thursday');
+            } else if ('schedule2Teacher-selectday-edu-friday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'friday');
+            } else if ('schedule2Teacher-selectday-edu-saturday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'saturday');
+            } else if ('schedule2Teacher-selectday-edu-sunday' == $intent) {
+                $this->pushScheduleTech($userId, $userName, 'sunday');
+            }
+
+            //schedule TEST
+            else if ('schedule2Teache-test' == $intent) {
+                $this->pushScheduleTEST($userId, $userName);
+            }
+
+            //schedule study
+            else if ('schedule-selectday-monday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'monday');
+            } else if ('schedule-selectday-tuesday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'tuesday');
+            } else if ('schedule-selectday-wednesday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'wednesday');
+            } else if ('schedule-selectday-thursday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'thursday');
+            } else if ('schedule-selectday-friday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'friday');
+            } else if ('schedule-selectday-saturday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'saturday');
+            } else if ('schedule-selectday-sunday' == $intent) {
+                $this->pushSchedule($userId, $userName, 'sunday');
             } else if ('password expire' == $intent) {
                 $day = $this->pass_expire($timePass);
                 if ($day <= 30) {
@@ -88,7 +126,11 @@ class line_fulliment extends Controller
                     $this->pushTimePass($userId, $timePass);
                 }
             } else if ('money' == $intent) {
-                $this->pushCostStu($userId);
+                $cost1 = $userName[0]['cost']['register'];
+                $cost2 = $userName[0]['cost']['library'];
+                $cost3 = $userName[0]['cost']['rental'];
+                $cost4 = $userName[0]['cost']['other'];
+                $this->pushCostStu($userId, $cost1, $cost2, $cost3, $cost4);
             } else if ('logout-info-yes' == $intent) {
                 $this->logout($userId);
                 $this->outAccount($userId, $un);
@@ -348,8 +390,18 @@ class line_fulliment extends Controller
         return $response;
     }
 
-    public function pushCostStu($to)
+    public function pushCostStu($to, $regis, $lib, $rental, $other)
     {
+        if ($regis == 0) {
+            $regis = "ไม่พบยอดค้างชำระ";
+        }if ($lib == 0) {
+            $lib = "ไม่พบยอดค้างชำระ";
+        }if ($rental == 0) {
+            $rental = "ไม่พบยอดค้างชำระ";
+        }if ($other == 0) {
+            $other = "ไม่พบยอดค้างชำระ";
+        }
+
         $flex = ["type" => "flex",
             "altText" => "ภาระค่าใช้จ่าย",
             "contents" => [
@@ -373,7 +425,7 @@ class line_fulliment extends Controller
                                 ],
                                 [
                                     "type" => "text",
-                                    "text" => "2500 บาท",
+                                    "text" => "$regis",
                                     "size" => "md",
                                     "align" => "center",
                                     "weight" => "bold",
@@ -397,7 +449,7 @@ class line_fulliment extends Controller
                                 ],
                                 [
                                     "type" => "text",
-                                    "text" => "ไม่พบยอดค้างชำระ",
+                                    "text" => "$lib",
                                     "size" => "md",
                                     "align" => "center",
                                     "weight" => "bold",
@@ -421,7 +473,7 @@ class line_fulliment extends Controller
                                 ],
                                 [
                                     "type" => "text",
-                                    "text" => "ไม่พบยอดค้างชำระ",
+                                    "text" => "$rental",
                                     "size" => "md",
                                     "align" => "center",
                                     "weight" => "bold",
@@ -445,7 +497,7 @@ class line_fulliment extends Controller
                                 ],
                                 [
                                     "type" => "text",
-                                    "text" => "ไม่พบยอดค้างชำระ",
+                                    "text" => "$other",
                                     "size" => "md",
                                     "align" => "center",
                                     "weight" => "bold",
@@ -688,6 +740,411 @@ class line_fulliment extends Controller
             }
         }
 
+    }
+
+    public function pushScheduleStudy($to)
+    {
+        $flex = [
+            "line" => [
+                "type" => "flex",
+                "altText" => "ตารางเรียน",
+                "contents" => [
+                    "contents" => [
+                        [
+                            "direction" => "ltr",
+                            "header" => [
+                                "contents" => [
+                                    [
+                                        "color" => "#000000",
+                                        "text" => "84511159",
+                                        "weight" => "bold",
+                                        "align" => "center",
+                                        "size" => "xl",
+                                        "type" => "text",
+                                    ],
+                                    [
+                                        "text" => "Building : T5D5",
+                                        "size" => "lg",
+                                        "color" => "#000000",
+                                        "align" => "center",
+                                        "weight" => "bold",
+                                        "type" => "text",
+                                    ],
+                                    [
+                                        "weight" => "bold",
+                                        "type" => "text",
+                                        "align" => "center",
+                                        "text" => "Time : 9.30 - 11.30 น.",
+                                        "size" => "lg",
+                                        "color" => "#000000",
+                                    ],
+                                ],
+                                "type" => "box",
+                                "layout" => "vertical",
+                            ],
+                            "styles" => [
+                                "header" => [
+                                    "backgroundColor" => "#F8F6D5",
+                                ],
+                            ],
+                            "type" => "bubble",
+                        ],
+                        [
+                            "styles" => [
+                                "header" => [
+                                    "backgroundColor" => "#F8F6D5",
+                                ],
+                            ],
+                            "type" => "bubble",
+                            "direction" => "ltr",
+                            "header" => [
+                                "layout" => "vertical",
+                                "type" => "box",
+                                "contents" => [
+                                    [
+                                        "weight" => "bold",
+                                        "align" => "center",
+                                        "text" => "85256459",
+                                        "size" => "xl",
+                                        "type" => "text",
+                                        "color" => "#000000",
+                                    ],
+                                    [
+                                        "color" => "#000000",
+                                        "text" => "Building : A7G9",
+                                        "type" => "text",
+                                        "weight" => "bold",
+                                        "size" => "lg",
+                                        "align" => "center",
+                                    ],
+                                    [
+                                        "text" => "Time => 15.30 - 18.30 น.",
+                                        "type" => "text",
+                                        "align" => "center",
+                                        "weight" => "bold",
+                                        "size" => "lg",
+                                        "color" => "#000000",
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    "type" => "carousel",
+                ],
+            ],
+        ];
+
+        $data = [
+            'to' => $to,
+            'messages' => [$flex],
+        ];
+
+        $strUrl = "https://api.line.me/v2/bot/message/push";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $strUrl);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "Authorization: Bearer $this->access_token",
+            "cache-control: no-cache",
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
+
+    public function pushSchedule($to, $class, $day)
+    {
+        $array_class = array();
+        $find = json_decode($class);
+        $sche_object = $class[0]['schedula'][$day];
+        $count = count($sche_object);
+
+        if ($count != 0) {
+
+            for ($i = 0; $i < $count; $i++) {
+                $subject = $class[0]['schedula'][$day][$i]['subject'];
+                $building = $class[0]['schedula'][$day][$i]['building'];
+                $start = $class[0]['schedula'][$day][$i]['time_start'];
+                $end = $class[0]['schedula'][$day][$i]['time_end'];
+
+                $flex = [
+                    "header" => [
+                        "type" => "box",
+                        "contents" => [
+                            [
+                                "text" => $subject,
+                                "align" => "center",
+                                "weight" => "bold",
+                                "color" => "#000000",
+                                "size" => "xl",
+                                "type" => "text",
+                            ],
+                            [
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                                "text" => "ห้องเรียน : $building",
+                                "color" => "#000000",
+                            ],
+                            [
+                                "text" => "เวลาเรียน : $start - $end น.",
+                                "color" => "#000000",
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                            ],
+                        ],
+                        "layout" => "vertical",
+                    ],
+                    "type" => "bubble",
+                    "direction" => "ltr",
+                    "styles" => [
+                        "header" => [
+                            "backgroundColor" => "#F8F6D5",
+                        ],
+                    ],
+                ];
+
+                $array_class[] = $flex;
+            }
+
+            $flex_class = [
+                "type" => "flex",
+                "contents" => [
+                    "contents" =>
+                    $array_class
+                    ,
+                    "type" => "carousel",
+                ],
+                "altText" => "ตารางเรียน",
+            ];
+        } else {
+            $flex_class = [
+                "type" => "text",
+                "text" => "ไม่พบข้อมูลตารางเรียน",
+            ];
+        }
+
+        $data = [
+            'to' => $to,
+            'messages' => [$flex_class],
+        ];
+
+        $strUrl = "https://api.line.me/v2/bot/message/push";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $strUrl);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "Authorization: Bearer $this->access_token",
+            "cache-control: no-cache",
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
+
+    public function pushScheduleTEST($to, $class)
+    {
+        $array_class = array();
+        $find = json_decode($class);
+        $sche_object = $class[0]['schedula_test'];
+        $count = count($sche_object);
+
+        if ($count != 0) {
+
+            for ($i = 0; $i < $count; $i++) {
+                $days = $class[0]['schedula_test'][$i]['days'];
+                $building = $class[0]['schedula_test'][$i]['building'];
+                $start = $class[0]['schedula_test'][$i]['time_start'];
+                $end = $class[0]['schedula_test'][$i]['time_end'];
+
+                $flex = [
+                    "header" => [
+                        "type" => "box",
+                        "contents" => [
+                            [
+                                "text" => $days,
+                                "align" => "center",
+                                "weight" => "bold",
+                                "color" => "#000000",
+                                "size" => "xl",
+                                "type" => "text",
+                            ],
+                            [
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                                "text" => "ห้อง : $building",
+                                "color" => "#000000",
+                            ],
+                            [
+                                "text" => "เวลา : $start - $end น.",
+                                "color" => "#000000",
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                            ],
+                        ],
+                        "layout" => "vertical",
+                    ],
+                    "type" => "bubble",
+                    "direction" => "ltr",
+                    "styles" => [
+                        "header" => [
+                            "backgroundColor" => "#F8F6D5",
+                        ],
+                    ],
+                ];
+
+                $array_class[] = $flex;
+            }
+        } else {
+            $flex_class = [
+                "type" => "text",
+                "text" => "ไม่พบข้อมูลตารางคุมสอบ",
+            ];
+        }
+
+        $flex_class = [
+            "type" => "flex",
+            "contents" => [
+                "contents" =>
+                $array_class
+                ,
+                "type" => "carousel",
+            ],
+            "altText" => "ตารางคุมสอบ",
+        ];
+
+        $data = [
+            'to' => $to,
+            'messages' => [$flex_class],
+        ];
+
+        $strUrl = "https://api.line.me/v2/bot/message/push";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $strUrl);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "Authorization: Bearer $this->access_token",
+            "cache-control: no-cache",
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
+
+    public function pushScheduleTech($to, $class, $day)
+    {
+        $array_class = array();
+        $find = json_decode($class);
+        $sche_object = $class[0]['schedula_edu'][$day];
+        $count = count($sche_object);
+
+        if ($count != 0) {
+
+            for ($i = 0; $i < $count; $i++) {
+                $subject = $class[0]['schedula_edu'][$day][$i]['subject'];
+                $building = $class[0]['schedula_edu'][$day][$i]['building'];
+                $start = $class[0]['schedula_edu'][$day][$i]['time_start'];
+                $end = $class[0]['schedula_edu'][$day][$i]['time_end'];
+
+                $flex = [
+                    "header" => [
+                        "type" => "box",
+                        "contents" => [
+                            [
+                                "text" => $subject,
+                                "align" => "center",
+                                "weight" => "bold",
+                                "color" => "#000000",
+                                "size" => "xl",
+                                "type" => "text",
+                            ],
+                            [
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                                "text" => "ห้อง : $building",
+                                "color" => "#000000",
+                            ],
+                            [
+                                "text" => "เวลา : $start - $end น.",
+                                "color" => "#000000",
+                                "weight" => "bold",
+                                "align" => "center",
+                                "type" => "text",
+                                "size" => "lg",
+                            ],
+                        ],
+                        "layout" => "vertical",
+                    ],
+                    "type" => "bubble",
+                    "direction" => "ltr",
+                    "styles" => [
+                        "header" => [
+                            "backgroundColor" => "#F8F6D5",
+                        ],
+                    ],
+                ];
+
+                $array_class[] = $flex;
+            }
+
+            $flex_class = [
+                "type" => "flex",
+                "contents" => [
+                    "contents" =>
+                    $array_class
+                    ,
+                    "type" => "carousel",
+                ],
+                "altText" => "ตารางสอน",
+            ];
+        } else {
+            $flex_class = [
+                "type" => "text",
+                "text" => "ไม่พบข้อมูลตารางสอน",
+            ];
+        }
+
+        $data = [
+            'to' => $to,
+            'messages' => [$flex_class],
+        ];
+
+        $strUrl = "https://api.line.me/v2/bot/message/push";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $strUrl);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "Authorization: Bearer $this->access_token",
+            "cache-control: no-cache",
+        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
     }
 
 }

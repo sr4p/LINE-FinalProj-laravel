@@ -334,7 +334,7 @@ require_once '../vendor/autoload.php';
                 type = "เจ้าหน้าที่"
             }
             
-            if (flagEmail2 && flagTel2) {
+            
                 var dataSend = {
                     username: document.getElementById('username2').value,
                     type: type,
@@ -366,7 +366,7 @@ require_once '../vendor/autoload.php';
                         console.log(e);
                     }
                 });
-            }
+            
         }
 
     </script>
@@ -401,9 +401,11 @@ require_once '../vendor/autoload.php';
 
     <div class="container">
         <form class="form-inline">
+            <div style="margin-left: 30px">
+                <button class="btn btn-success ml-auto" title="เพิ่มเจ้าหน้าที่" type="button" data-toggle="modal" data-target="#addAdminModel">เพิ่มเจ้าหน้าที่ <i class="fa fa-plus"></i></button>    
+            </div>
             <div class="form-group mt-2 mb-2 ml-auto p-2" style="margin-right: 7px">
-            <input class="form-control mr-sm-1 ml-auto" type="text" placeholder="ค้นหา..." id="myInput">
-            <button class="btn btn-success ml-auto rounded-circle" title="เพิ่มเจ้าหน้าที่" type="button" data-toggle="modal" data-target="#addAdminModel"><i class="fa fa-plus"></i></button>    
+                <input class="form-control mr-sm-1 ml-auto" type="text" placeholder="ค้นหา..." id="myInput">
             </div>
         </form>
         <div class="modal fade" id="addAdminModel" tabindex="-1" role="dialog" aria-labelledby="addAdminModelLabel" aria-hidden="true">

@@ -257,14 +257,34 @@ $("#ss").click(function(e){
             var rrm2 = $('select[name="rm2"]').val();
 
             var rrm3 = $('select[name="rm3"]').val();
+
+
             var time2 = $('input[name="datepicker"]').val();
             var time3 = $('input[name="datepicker2"]').val();
 
+            // if(time2 == ""){
+            //     time2 = "non";
+            // }if(time3 == ""){
+            //     time3 = "non";
+            // } else {
+            //     //
+            // }
+
+
+            // var form_data = new FormData();
+            // form_data.append('rich_login', rrm1);
+            // form_data.append('rich_student', rrm2);
+            // form_data.append('rich_personnal', rrm3);
+            // form_data.append('time_stu', time2);
+            // form_data.append('time_per', time3);
 
 
         $.ajax({
             type: 'POST',
             url: '/useRichmenu',
+            headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
             data: {
                 rich_login: rrm1,
                 rich_student: rrm2,
@@ -276,7 +296,8 @@ $("#ss").click(function(e){
                 window.location.reload();
 
             }, error: function(data){
-            
+                // console.log(typeof time2);
+                // console.log(typeof time3);
             }
         });
     });
@@ -755,7 +776,7 @@ function sortTableSt() {
 
                             <div class="row" style="margin-top:20px">
                                 <div class="col" style="margin-top:5px">เวลาใช้งาน :</div>
-                                <input class="form-control" style="width:200px;margin-right:50px" type="text" name="datepicker" id="datepicker" disabled>
+                                <input class="form-control" style="width:200px;margin-right:50px" type="text" name="datepicker" id="datepicker" disabled></input>
                             </div>
 
 <!-- // -->
@@ -894,7 +915,7 @@ function sortTableSt() {
                         @elseif($item->status == 'นิสิต' || $item->status == 'บุคลากร' || $item->status == 'เมนูเริ่มต้น')
                             <button class="btn btn-dark rounded-circle" title="ลบ" id='delete-rich' type="button" data-toggle="modal" data-target="#removeStModal" onclick="removeR('{{$item->richId}}','{{$item->name}}')" disabled><i class="fa fa-trash"></i></button>
                         @else
-                            <button class="btn btn-warning rounded-circle" title="ยกเลิก" id='cancel-rich' type="button" data-toggle="modal" data-target="#CancelStModal" onclick="cancelR('{{$item->richId}}','{{$item->name}}')"><i class="fa fa-ban"></i></button>
+                            <button class="btn btn-warning rounded-circle" title="ยกเลิก" id='cancel-rich' type="button" data-toggle="modal" data-target="#CancelStModal" onclick="cancelR('{{$item->richId}}','{{$item->name}}')"><i class="fa fa-times"></i></button>
                         @endif
 
                         </td>

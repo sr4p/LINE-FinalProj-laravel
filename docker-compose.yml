@@ -4,17 +4,35 @@ networks:
     db-line:
       external:
         name: db-line
-
+        
 services:
-    nginx:
-      image: "php7-docker"
-      container_name: buuline-backend-line
-      ports:
-          - "8181:80"
-      networks:
-          - db-line
-      volumes:
-          - ./home/buuline/lp:/var/www/html
+  nginx:
+    image: "php7-docker"
+    container_name: buuline-backend
+    ports:
+        - "8181:80"
+    networks:
+        - db-line
+    volumes:
+        - /home/buuline/lp:/var/www/html
+
+# version: '3'
+
+# networks:
+#     db-line:
+#       external:
+#         name: db-line
+
+# services:
+#     nginx:
+#       image: "php7-docker"
+#       container_name: buuline-backend-line
+#       ports:
+#           - "8181:80"
+#       networks:
+#           - db-line
+#       volumes:
+#           - ./home/buuline/lp:/var/www/html
         
 # services:
   # nginx:

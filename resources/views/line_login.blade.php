@@ -103,7 +103,7 @@ function close_login(){
 
             }, error: function(data){
               $('#fail_login').show();
-              alert("ERRRR login");
+              // alert("ERRRR login");
               
             }
         });
