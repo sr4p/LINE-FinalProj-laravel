@@ -244,6 +244,8 @@ require_once '../vendor/autoload.php';
           console.log('success');
         },
         error: function(e) {
+          var myJSON = JSON.stringify(e);
+          alert(myJSON);
           console.log(e);
         }
       });

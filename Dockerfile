@@ -52,7 +52,8 @@ ADD www.conf /usr/local/etc/php-fpm.d/www.conf
 ADD supervisord.conf /etc/supervisord.conf
 
 #install composer
-RUN curl -s http://getcomposer.org/installer | php && mv ./composer.phar /usr/local/bin/composer
+# RUN curl -s http://getcomposer.org/installer | php && mv ./composer.phar /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 #install nginx
 RUN apk add nginx
@@ -61,7 +62,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 #supervisor
 RUN apk add --no-cache supervisor
 
-EXPOSE 443 80
+EXPOSE 443 8882
 
 STOPSIGNAL SIGTERM
 

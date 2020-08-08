@@ -765,7 +765,7 @@ function sortTableSt() {
                             </div>
 
                             <div class="row" style="margin-top:20px">
-                                <div class="col" style="margin-top:5px mr-1">ต้องการกำหนดเวลา : </div>
+                                <div class="col" style="margin-top:5px mr-1">ต้องการกำหนดวันที่ใช้งาน : </div>
                                 <div class="col" style="margin-top:5px">
                                 <div class="custom-control custom-switch" >
                                     <input type="checkbox" class="custom-control-input"  id="switch-success" name="switch-success">
@@ -775,7 +775,7 @@ function sortTableSt() {
                             
 
                             <div class="row" style="margin-top:20px">
-                                <div class="col" style="margin-top:5px">เวลาใช้งาน :</div>
+                                <div class="col" style="margin-top:5px">วันที่ใช้งาน :</div>
                                 <input class="form-control" style="width:200px;margin-right:50px" type="text" name="datepicker" id="datepicker" disabled></input>
                             </div>
 
@@ -810,7 +810,7 @@ function sortTableSt() {
                             </div>
 
                             <div class="row" style="margin-top:20px">
-                                <div class="col" style="margin-top:5px mr-1">ต้องการกำหนดเวลา : </div>
+                                <div class="col" style="margin-top:5px mr-1">ต้องการกำหนดวันที่ใช้งาน : </div>
                                 <div class="col" style="margin-top:5px">
                                 <div class="custom-control custom-switch" >
                                     <input type="checkbox" class="custom-control-input"  id="switch-success2" name="switch-success2">
@@ -819,7 +819,7 @@ function sortTableSt() {
                             </div>
 
                             <div class="row" style="margin-top:20px">
-                                <div class="col" style="margin-top:5px">เวลาใช้งาน :</div>
+                                <div class="col" style="margin-top:5px">วันที่ใช้งาน :</div>
                                 <input class="form-control" style="width:200px;margin-right:50px" name="datepicker2" id="datepicker2" disabled></input>
                             </div>
 
